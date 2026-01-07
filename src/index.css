@@ -1,0 +1,14 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Outfit', sans-serif;
+}
+
+#root {
+  background-color: #e0e0e0;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
