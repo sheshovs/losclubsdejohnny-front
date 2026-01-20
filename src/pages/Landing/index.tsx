@@ -38,8 +38,8 @@ function LandingPage() {
 		<Grid
 			container
 			size={12}
-			height="100dvh"
-			minHeight={800}
+			height={isResponsive ? "auto" : "100dvh"}
+			minHeight={isResponsive ? "100dvh" : 800}
 			bgcolor="#F7F4EF"
 			alignItems={{
 				xs: "flex-start",
