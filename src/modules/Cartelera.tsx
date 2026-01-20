@@ -62,7 +62,7 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 				>
 					Cartelera
 				</Typography>
-				{isLoading ? (
+				{isLoading || !billboardData ? (
 					<Skeleton
 						width="30%"
 						height={16}
@@ -98,7 +98,7 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 					md: 2.4,
 				}}
 			>
-				{isLoading
+				{isLoading || !billboardData
 					? [...Array(3)].map((_, index) => (
 							<Grid
 								key={index}
