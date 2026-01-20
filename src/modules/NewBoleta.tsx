@@ -402,7 +402,7 @@ const NewBoleta = ({
 							onClick={() =>
 								handleHighlightChange?.(
 									track.id,
-									!trackRatings[track.id]?.isHighlighted
+									!trackRatings[track.id]?.isHighlighted,
 								)
 							}
 							sx={{
@@ -569,161 +569,163 @@ const NewBoleta = ({
 						/>
 					</React.Fragment>
 				))}
-				{[...Array(defaultTracksToShow)].map((_, index) => (
-					<React.Fragment key={index}>
-						<Grid
-							container
-							size={12}
-							height="44.8px"
-							sx={{
-								backgroundColor: "#f5f3ed",
-							}}
-						>
-							<Divider
-								orientation="vertical"
-								flexItem
-								sx={{
-									borderColor: "#28231D",
-								}}
-							/>
-							<Grid
-								container
-								padding={1.6}
-								width="44.8px"
-								height="44.8px"
-								justifyContent="center"
-								alignItems="center"
-							>
-								<Typography
-									fontWeight={400}
+				{boletaRef
+					? [...Array(defaultTracksToShow)].map((_, index) => (
+							<React.Fragment key={index}>
+								<Grid
+									container
+									size={12}
+									height="44.8px"
 									sx={{
-										textTransform: "uppercase",
-										fontSize: {
-											xs: "calc(16px * 0.7)",
-											md: "calc(16px * 0.8)",
-										},
-										lineHeight: 1,
-										letterSpacing: "calc(1.2px * 0.8)",
-										color: "rgba(40, 35, 29, 0.1)",
-										fontFamily: "'Outfit', sans-serif",
+										backgroundColor: "#f5f3ed",
 									}}
 								>
-									#
-								</Typography>
-							</Grid>
-							<Divider
-								orientation="vertical"
-								flexItem
-								sx={{
-									borderColor: "#28231D",
-								}}
-							/>
-							<Grid
-								container
-								padding={1.6}
-								flex={1}
-								alignItems="center"
-							>
-								<Typography
-									fontWeight={400}
-									sx={{
-										textTransform: "uppercase",
-										fontSize: {
-											xs: "calc(16px * 0.7)",
-											md: "calc(16px * 0.8)",
-										},
-										lineHeight: 1,
-										letterSpacing: "calc(1.2px * 0.8)",
-										color: "rgba(40, 35, 29, 0.1)",
-										fontFamily: "'Outfit', sans-serif",
-									}}
-								>
-									Song title
-								</Typography>
-							</Grid>
-							<Divider
-								orientation="vertical"
-								flexItem
-								sx={{
-									borderColor: "#28231D",
-								}}
-							/>
-							<Grid
-								container
-								padding={1.6}
-								width="44.8px"
-								height="44.8px"
-								justifyContent="center"
-								alignItems="center"
-								gap={0.8}
-							>
-								<Rating
-									readOnly
-									max={1}
-									icon={
-										<Icon
-											icon="favorite"
-											fontSize="inherit"
+									<Divider
+										orientation="vertical"
+										flexItem
+										sx={{
+											borderColor: "#28231D",
+										}}
+									/>
+									<Grid
+										container
+										padding={1.6}
+										width="44.8px"
+										height="44.8px"
+										justifyContent="center"
+										alignItems="center"
+									>
+										<Typography
+											fontWeight={400}
+											sx={{
+												textTransform: "uppercase",
+												fontSize: {
+													xs: "calc(16px * 0.7)",
+													md: "calc(16px * 0.8)",
+												},
+												lineHeight: 1,
+												letterSpacing: "calc(1.2px * 0.8)",
+												color: "rgba(40, 35, 29, 0.1)",
+												fontFamily: "'Outfit', sans-serif",
+											}}
+										>
+											#
+										</Typography>
+									</Grid>
+									<Divider
+										orientation="vertical"
+										flexItem
+										sx={{
+											borderColor: "#28231D",
+										}}
+									/>
+									<Grid
+										container
+										padding={1.6}
+										flex={1}
+										alignItems="center"
+									>
+										<Typography
+											fontWeight={400}
+											sx={{
+												textTransform: "uppercase",
+												fontSize: {
+													xs: "calc(16px * 0.7)",
+													md: "calc(16px * 0.8)",
+												},
+												lineHeight: 1,
+												letterSpacing: "calc(1.2px * 0.8)",
+												color: "rgba(40, 35, 29, 0.1)",
+												fontFamily: "'Outfit', sans-serif",
+											}}
+										>
+											Song title
+										</Typography>
+									</Grid>
+									<Divider
+										orientation="vertical"
+										flexItem
+										sx={{
+											borderColor: "#28231D",
+										}}
+									/>
+									<Grid
+										container
+										padding={1.6}
+										width="44.8px"
+										height="44.8px"
+										justifyContent="center"
+										alignItems="center"
+										gap={0.8}
+									>
+										<Rating
+											readOnly
+											max={1}
+											icon={
+												<Icon
+													icon="favorite"
+													fontSize="inherit"
+												/>
+											}
+											emptyIcon={
+												<Icon
+													icon="favoriteEmpty"
+													fontSize="inherit"
+												/>
+											}
+											sx={{
+												fontSize: "19.2px",
+												opacity: 0.2,
+												"& .MuiRating-iconFilled": {
+													color: "#28231D",
+												},
+											}}
 										/>
-									}
-									emptyIcon={
-										<Icon
-											icon="favoriteEmpty"
-											fontSize="inherit"
+									</Grid>
+									<Divider
+										orientation="vertical"
+										flexItem
+										sx={{
+											borderColor: "#28231D",
+										}}
+									/>
+									<Grid
+										container
+										padding={1.6}
+										alignItems="center"
+									>
+										<Rating
+											max={5}
+											readOnly
+											sx={{
+												gap: 1,
+												fontSize: "19.2px",
+												color: "#28231D",
+												opacity: 0.2,
+												"& label.MuiRating-label": {
+													display: "none",
+												},
+											}}
 										/>
-									}
+									</Grid>
+									<Divider
+										orientation="vertical"
+										flexItem
+										sx={{
+											borderColor: "#28231D",
+										}}
+									/>
+								</Grid>
+								<Divider
+									flexItem
+									orientation="horizontal"
 									sx={{
-										fontSize: "19.2px",
-										opacity: 0.2,
-										"& .MuiRating-iconFilled": {
-											color: "#28231D",
-										},
+										borderColor: "#28231D",
 									}}
 								/>
-							</Grid>
-							<Divider
-								orientation="vertical"
-								flexItem
-								sx={{
-									borderColor: "#28231D",
-								}}
-							/>
-							<Grid
-								container
-								padding={1.6}
-								alignItems="center"
-							>
-								<Rating
-									max={5}
-									readOnly
-									sx={{
-										gap: 1,
-										fontSize: "19.2px",
-										color: "#28231D",
-										opacity: 0.2,
-										"& label.MuiRating-label": {
-											display: "none",
-										},
-									}}
-								/>
-							</Grid>
-							<Divider
-								orientation="vertical"
-								flexItem
-								sx={{
-									borderColor: "#28231D",
-								}}
-							/>
-						</Grid>
-						<Divider
-							flexItem
-							orientation="horizontal"
-							sx={{
-								borderColor: "#28231D",
-							}}
-						/>
-					</React.Fragment>
-				))}
+							</React.Fragment>
+						))
+					: null}
 			</Grid>
 
 			<Grid

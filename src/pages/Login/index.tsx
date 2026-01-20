@@ -1,7 +1,7 @@
 import { Button, Grid, Paper, TextField, Typography } from "@mui/material"
 import React from "react"
 import { useAuth } from "../../context/AuthContext"
-import { useNavigate } from "react-router"
+import { Link, useNavigate } from "react-router"
 
 const LoginPage = () => {
 	const navigate = useNavigate()
@@ -34,7 +34,7 @@ const LoginPage = () => {
 				onSuccess: () => {
 					navigate("/dashboard")
 				},
-			}
+			},
 		)
 	}
 
@@ -75,17 +75,22 @@ const LoginPage = () => {
 					>
 						Iniciar sesión en
 					</Typography>
-					<Typography
-						fontWeight="900"
-						sx={{
-							fontSize: "calc(48px * 0.8)",
-							fontFamily: "'Outfit', sans-serif",
-							color: "#28231D",
-							lineHeight: 1,
-						}}
+					<Link
+						to="/"
+						style={{ textDecoration: "none" }}
 					>
-						Johnny’s Foolclub
-					</Typography>
+						<Typography
+							fontWeight="900"
+							sx={{
+								fontSize: "calc(48px * 0.8)",
+								fontFamily: "'Outfit', sans-serif",
+								color: "#28231D",
+								lineHeight: 1,
+							}}
+						>
+							Johnny’s Foolclub
+						</Typography>
+					</Link>
 				</Grid>
 
 				<Grid
@@ -110,6 +115,11 @@ const LoginPage = () => {
 						variant="outlined"
 						fullWidth
 						margin="normal"
+						onKeyDown={(e) => {
+							if (e.key === "Enter") {
+								handleLogin()
+							}
+						}}
 					/>
 				</Grid>
 				<Button

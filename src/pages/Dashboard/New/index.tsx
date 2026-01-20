@@ -84,7 +84,7 @@ const NewBillboard = () => {
 			artistAlbumsData?.items.find((album) => album.id === albumId) ||
 			({} as SpotifyAlbumItem)
 		const updatedAlbums = albums.map((item, i) =>
-			i === index ? { ...item, albumId, albumData } : item
+			i === index ? { ...item, albumId, albumData } : item,
 		)
 		setState((prevState) => ({
 			...prevState,
@@ -95,7 +95,7 @@ const NewBillboard = () => {
 
 	const handleAlbumDateChange = (index: number, date: Dayjs) => {
 		const updatedAlbums = albums.map((item, i) =>
-			i === index ? { ...item, date } : item
+			i === index ? { ...item, date } : item,
 		)
 		setState((prevState) => ({
 			...prevState,
@@ -152,6 +152,10 @@ const NewBillboard = () => {
 			bgcolor="#F7F4EF"
 			justifyContent="center"
 			flexDirection="column"
+			sx={{
+				overflow: "hidden",
+				flexWrap: "nowrap",
+			}}
 		>
 			{/* Header */}
 			<Grid
@@ -221,6 +225,11 @@ const NewBillboard = () => {
 				flex={1}
 				justifyContent="center"
 				paddingTop={6}
+				paddingBottom={4}
+				sx={{
+					overflowY: "auto",
+					flexWrap: "nowrap",
+				}}
 			>
 				<Grid
 					width={500}
@@ -586,7 +595,7 @@ const NewBillboard = () => {
 										)}
 										renderOption={(
 											props,
-											option: { label: string; value: string; img: string }
+											option: { label: string; value: string; img: string },
 										) => (
 											<MenuItem
 												{...props}
@@ -688,7 +697,7 @@ const NewBillboard = () => {
 								onClick={() => {
 									// si existe un album sin seleccionar, no agregar otro
 									const hasEmptyAlbum = albums.some(
-										(item) => !item.albumId || !dayjs(item.date).isValid()
+										(item) => !item.albumId || !dayjs(item.date).isValid(),
 									)
 									if (hasEmptyAlbum) return
 									// Add new album logic

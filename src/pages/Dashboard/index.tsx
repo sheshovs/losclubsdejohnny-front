@@ -35,7 +35,7 @@ const DashboardPage = () => {
 		onSuccess: (data) => {
 			// update the active billboard in the cache
 			const allBillboards = queryClient.getQueryData<BillboardResponse[]>(
-				API_QUERY_KEYS.billboard.all()
+				API_QUERY_KEYS.billboard.all(),
 			)
 
 			if (allBillboards) {
@@ -62,7 +62,7 @@ const DashboardPage = () => {
 				// update the cache
 				queryClient.setQueryData(
 					API_QUERY_KEYS.billboard.all(),
-					finalBillboards
+					finalBillboards,
 				)
 			}
 		},
@@ -78,6 +78,10 @@ const DashboardPage = () => {
 			justifyContent="center"
 			alignItems="center"
 			flexDirection="column"
+			sx={{
+				overflow: "hidden",
+				flexWrap: "nowrap",
+			}}
 		>
 			{/* Header */}
 			<Grid
@@ -147,8 +151,16 @@ const DashboardPage = () => {
 				alignItems="center"
 				flexDirection="column"
 				paddingTop={6}
+				paddingX={{
+					xs: 2,
+				}}
 				maxWidth={1000}
 				gap={3}
+				paddingBottom={4}
+				sx={{
+					overflowY: "auto",
+					flexWrap: "nowrap",
+				}}
 			>
 				<Grid
 					container
@@ -211,9 +223,9 @@ const DashboardPage = () => {
 											}}
 										>
 											{`Cartelera ${dayjs(billboard.startDate).format(
-												"dddd DD"
+												"dddd DD",
 											)} - ${dayjs(billboard.endDate).format(
-												"dddd DD [de] MMMM"
+												"dddd DD [de] MMMM",
 											)}`}
 										</Typography>
 										{billboard.isActive ? (

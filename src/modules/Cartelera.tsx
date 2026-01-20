@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material"
+import { Grid, Skeleton, Typography } from "@mui/material"
 import dayjs from "dayjs"
 import "dayjs/locale/es"
 import { SpotifyAlbumDetailResponse } from "../interfaces/spotify"
@@ -13,12 +13,12 @@ interface CarteleraProps {
 }
 
 const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
-	const { data: billboardData } = useActiveBillboardQuery()
+	const { data: billboardData, isLoading } = useActiveBillboardQuery()
 
 	const billboardDate = useMemo(() => {
 		if (!billboardData) return null
 		return `${dayjs(billboardData.startDate).format("MMMM DD")}–${dayjs(
-			billboardData.endDate
+			billboardData.endDate,
 		).format("DD")}`
 	}, [billboardData])
 	return (
@@ -62,22 +62,31 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 				>
 					Cartelera
 				</Typography>
-				<Typography
-					fontWeight="300"
-					sx={{
-						fontSize: {
-							xs: "calc(16px * 1)",
-							md: "calc(16px * 0.8)",
-						},
-						fontFamily: "'Outfit', sans-serif",
-						color: "#28231D",
-						letterSpacing: "calc(8px * 0.8)",
-						textTransform: "uppercase",
-						lineHeight: 1,
-					}}
-				>
-					{billboardDate}
-				</Typography>
+				{isLoading ? (
+					<Skeleton
+						width="30%"
+						height={16}
+						variant="rounded"
+						animation="wave"
+					/>
+				) : (
+					<Typography
+						fontWeight="300"
+						sx={{
+							fontSize: {
+								xs: "calc(16px * 1)",
+								md: "calc(16px * 0.8)",
+							},
+							fontFamily: "'Outfit', sans-serif",
+							color: "#28231D",
+							letterSpacing: "calc(8px * 0.8)",
+							textTransform: "uppercase",
+							lineHeight: 1,
+						}}
+					>
+						{billboardDate}
+					</Typography>
+				)}
 			</Grid>
 
 			<Grid
@@ -89,6 +98,119 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 					md: 2.4,
 				}}
 			>
+				{isLoading
+					? [...Array(3)].map((_, index) => (
+							<Grid
+								key={index}
+								container
+								size={12}
+								sx={{
+									gap: 1.9,
+									borderRadius: "6px",
+								}}
+								alignItems="center"
+								flexDirection={{
+									xs: "row-reverse",
+									md: "row",
+								}}
+								paddingX={{
+									xs: 3,
+									md: 0,
+								}}
+								paddingY={{
+									xs: 1.5,
+									md: 0,
+								}}
+							>
+								<Skeleton
+									width={isResponsive ? 150 : 120}
+									height={isResponsive ? 150 : 120}
+									variant="rounded"
+									animation="wave"
+								/>
+
+								<Grid
+									container
+									size={12}
+									flex={1}
+									flexDirection={{
+										xs: "column",
+										md: "row",
+									}}
+									gap={{
+										xs: 3,
+										md: 1.9,
+									}}
+								>
+									<Grid
+										container
+										size={12}
+										flex={1}
+										flexDirection="column"
+										justifyContent="center"
+										gap={{
+											xs: 1.5,
+											md: 1.2,
+										}}
+										paddingY={{
+											xs: 0,
+											md: 1.8,
+										}}
+									>
+										<Skeleton
+											width="40%"
+											height={12}
+											variant="rounded"
+											animation="wave"
+										/>
+										<Skeleton
+											width="80%"
+											height={32}
+											variant="rounded"
+											animation="wave"
+										/>
+										<Skeleton
+											width="60%"
+											height={24}
+											variant="rounded"
+											animation="wave"
+										/>
+										<Skeleton
+											width="20%"
+											height={10}
+											variant="rounded"
+											animation="wave"
+										/>
+									</Grid>
+
+									<Grid
+										container
+										size={12}
+										flex={0.3}
+										flexDirection="column"
+										justifyContent="center"
+										gap={{
+											xs: 1,
+											md: 0.8,
+										}}
+									>
+										<Skeleton
+											width="60%"
+											height={16}
+											variant="rounded"
+											animation="wave"
+										/>
+										<Skeleton
+											width="40%"
+											height={16}
+											variant="rounded"
+											animation="wave"
+										/>
+									</Grid>
+								</Grid>
+							</Grid>
+						))
+					: null}
 				{billboardData?.albums?.map(({ date, albumData: album }, index) => {
 					return (
 						<Grid
@@ -279,8 +401,8 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 										{Math.floor(
 											album.tracks.items.reduce(
 												(acc, track) => acc + track.duration_ms,
-												0
-											) / 60000
+												0,
+											) / 60000,
 										)}{" "}
 										minutos
 									</Typography>
