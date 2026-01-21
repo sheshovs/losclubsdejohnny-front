@@ -138,7 +138,6 @@ const BoletaInformation = ({
 						sx={{
 							fontSize: {
 								xs: "24px",
-								md: "calc(32px * 0.8)",
 							},
 							fontWeight: "900",
 							lineHeight: 1,
@@ -152,7 +151,7 @@ const BoletaInformation = ({
 						sx={{
 							fontSize: {
 								xs: "16px",
-								md: "calc(24px * 0.8)",
+								md: "18px",
 							},
 							fontWeight: "300",
 							lineHeight: 1,

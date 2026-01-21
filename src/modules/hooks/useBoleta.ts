@@ -170,7 +170,7 @@ const useBoleta = () => {
       canvasHeight: boletaRef.current.clientHeight+0.5,
 			width: 800,
       height: boletaRef.current.clientHeight+0.5,
-      pixelRatio: 2,
+      pixelRatio: 1,
 		})
 			.then((dataUrl) => {
 				download(dataUrl, `boleta-${selectedAlbum?.name}.jpeg`)

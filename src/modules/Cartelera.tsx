@@ -290,23 +290,19 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 											},
 											fontWeight: "300",
 											lineHeight: 1,
-											letterSpacing: {
-												xs: "calc(6px * 1)",
-												lg: "calc(6px * 0.8)",
-											},
-											textTransform: "uppercase",
 											color: "#28231D",
 											fontFamily: "'Outfit', sans-serif",
 										}}
 									>
-										{dayjs(date).format("dddd DD")}
+										{dayjs(date).format("dddd DD").charAt(0).toUpperCase() +
+											dayjs(date).format("dddd DD").slice(1)}
 									</Typography>
 									<Typography
 										sx={{
 											fontSize: {
 												xs: "32px",
 												md: "calc(24px * 0.8)",
-												lg: "calc(32px * 0.8)",
+												lg: "24px",
 											},
 											fontWeight: "900",
 											lineHeight: 1,
@@ -321,7 +317,7 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 											fontSize: {
 												xs: "24px",
 												md: "calc(20px * 0.8)",
-												lg: "calc(24px * 0.8)",
+												lg: "18px",
 											},
 											fontWeight: "300",
 											lineHeight: 1,

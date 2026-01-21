@@ -120,7 +120,7 @@ const Insignias = ({ isResponsive }: InsigniasProps) => {
 				.fill(0)
 				.map(() => ({
 					top: isResponsive
-						? Math.floor(Math.random() * 7) + 21
+						? Math.floor(Math.random() * 7) + 18
 						: Math.floor(Math.random() * 10) - 2,
 					left: isResponsive
 						? Math.floor(Math.random() * 80) - 5
