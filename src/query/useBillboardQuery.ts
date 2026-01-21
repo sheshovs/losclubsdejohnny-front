@@ -13,3 +13,10 @@ export const useGetBillboardsQuery = () =>
     queryKey: API_QUERY_KEYS.billboard.all(),
     queryFn: () => API.billboard.getAll(),
   });
+
+export const useBillboardByUuidQuery = (billboardId: string) => 
+  useQuery({
+    queryKey: API_QUERY_KEYS.billboard.byUuid(billboardId),
+    queryFn: () => API.billboard.getByUuid(billboardId),
+    enabled: !!billboardId,
+  });

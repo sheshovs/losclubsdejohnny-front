@@ -36,6 +36,12 @@ const API = {
     create: (payload: BillboardPayload): Promise<void> => {
       return backendInstance.post(`/billboard`, payload)
     },
+    update: (billboardId: string, payload: BillboardPayload): Promise<void> => {
+      return backendInstance.put(`/billboard/${billboardId}`, payload)
+    },
+    delete: (billboardId: string): Promise<void> => {
+      return backendInstance.delete(`/billboard/${billboardId}`)
+    },
     getActive: (): Promise<BillboardResponse> => {
       return backendInstance.get(`/billboard/active`)
     },
@@ -44,6 +50,9 @@ const API = {
     },
     setActive: (billboardId: string): Promise<BillboardResponse> => {
       return backendInstance.post(`/billboard/activate/${billboardId}`)
+    },
+    getByUuid: (billboardId: string): Promise<BillboardResponse> => {
+      return backendInstance.get(`/billboard/${billboardId}`)
     }
   }
 }

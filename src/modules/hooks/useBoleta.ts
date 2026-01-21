@@ -167,9 +167,9 @@ const useBoleta = () => {
 		toJpeg(boletaRef.current, {
 			cacheBust: true,
 			canvasWidth: 800,
-      canvasHeight: 1319.55,
+      canvasHeight: boletaRef.current.clientHeight+0.5,
 			width: 800,
-      height: 1319.55,
+      height: boletaRef.current.clientHeight+0.5,
       pixelRatio: 2,
 		})
 			.then((dataUrl) => {

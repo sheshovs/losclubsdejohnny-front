@@ -26,6 +26,10 @@ function App() {
 						path="/dashboard/new"
 						element={<NewBillboard />}
 					/>
+					<Route
+						path="/dashboard/edit/:billboardId"
+						element={<NewBillboard />}
+					/>
 				</Route>
 			</Routes>
 		</>

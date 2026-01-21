@@ -398,7 +398,7 @@ const NewBoleta = ({
 						<Grid
 							container
 							size={12}
-							height="44.8px"
+							minHeight="44.8px"
 							onClick={() =>
 								handleHighlightChange?.(
 									track.id,
@@ -426,7 +426,7 @@ const NewBoleta = ({
 								container
 								padding={1.6}
 								width="44.8px"
-								height="44.8px"
+								minHeight="44.8px"
 								justifyContent="center"
 								alignItems="center"
 							>
@@ -488,7 +488,7 @@ const NewBoleta = ({
 								container
 								padding={1.6}
 								width="44.8px"
-								height="44.8px"
+								minHeight="44.8px"
 								justifyContent="center"
 								alignItems="center"
 								gap={0.8}
@@ -569,7 +569,7 @@ const NewBoleta = ({
 						/>
 					</React.Fragment>
 				))}
-				{boletaRef
+				{boletaRef && tracksOfAlbum.length < maxSongsToShow
 					? [...Array(defaultTracksToShow)].map((_, index) => (
 							<React.Fragment key={index}>
 								<Grid

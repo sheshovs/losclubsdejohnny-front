@@ -164,6 +164,8 @@ function LandingPage() {
 							size={12}
 							justifyContent="center"
 							alignItems="center"
+							position="relative"
+							zIndex={40}
 							sx={{
 								padding: 4.5,
 								backgroundColor: "#EFE9DB",

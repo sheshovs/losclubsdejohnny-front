@@ -6,6 +6,7 @@ import {
   AddRounded,
   DeleteRounded,
   CalendarMonthRounded,
+  EditRounded,
 } from "@mui/icons-material"
 
 export const icons = {
@@ -16,4 +17,5 @@ export const icons = {
   add: AddRounded,
   delete: DeleteRounded,
   calendar: CalendarMonthRounded,
+  edit: EditRounded,
 }

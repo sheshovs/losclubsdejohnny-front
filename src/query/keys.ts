@@ -8,6 +8,7 @@ export const API_QUERY_KEYS = {
   billboard: {
     active: () => [`billboard`, `active`],
     all: () => [`billboard`, `all`],
+    byUuid: (billboardId: string) => [`billboard`, `byUuid`, billboardId],
   }
 }
 

@@ -217,8 +217,8 @@ const BoletaInformation = ({
 						{Math.floor(
 							selectedAlbum.tracks.items.reduce(
 								(acc, track) => acc + track.duration_ms,
-								0
-							) / 60000
+								0,
+							) / 60000,
 						)}{" "}
 						minutos
 					</Typography>
@@ -371,6 +371,8 @@ const BoletaInformation = ({
 					<Grid
 						container
 						size={12}
+						position="relative"
+						zIndex={40}
 					>
 						<Button
 							onClick={onExportBoleta}

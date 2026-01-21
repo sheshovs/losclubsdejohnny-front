@@ -3,11 +3,11 @@ import { SpotifyAlbumDetailResponse } from "./spotify"
 
 export interface BillboardPayload {
   startDate: Dayjs | null
-    endDate: Dayjs | null
-    albums: {
-      date: Dayjs | null
-      albumId: string
-    }[]
+  endDate: Dayjs | null
+  albums: {
+    date: Dayjs | null
+    albumId: string
+  }[]
 }
 
 export interface BillboardResponse {
