@@ -56,7 +56,7 @@ function LandingPage() {
 			}}
 		>
 			{/* Imágen Insignias */}
-			<Insignias isResponsive={isResponsive} />
+			{!isResponsive ? <Insignias isResponsive={isResponsive} /> : null}
 
 			{selectedAlbum ? (
 				<NewBoleta

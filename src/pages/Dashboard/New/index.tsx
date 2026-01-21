@@ -234,6 +234,7 @@ const NewBillboard = () => {
 							fontFamily: "'Outfit', sans-serif",
 							color: "#28231D",
 							lineHeight: 1,
+							textAlign: "center",
 						}}
 					>
 						Johnny’s Foolclub
@@ -284,6 +285,7 @@ const NewBillboard = () => {
 					justifyContent="center"
 					paddingTop={6}
 					paddingBottom={4}
+					paddingX={3}
 					sx={{
 						overflowY: "auto",
 						flexWrap: "nowrap",
@@ -294,6 +296,11 @@ const NewBillboard = () => {
 						container
 						gap={5}
 						flexDirection="column"
+						sx={{
+							flexWrap: "nowrap",
+							overflowY: "auto",
+							overflowX: "hidden",
+						}}
 					>
 						{/* Volver */}
 						<Button
@@ -489,7 +496,11 @@ const NewBillboard = () => {
 										<Grid
 											container
 											flex={1}
-											gap={2.4}
+											gap={{
+												xs: 1.5,
+												md: 2.4,
+											}}
+											alignItems="center"
 										>
 											<Box
 												sx={{
@@ -513,7 +524,10 @@ const NewBillboard = () => {
 											<Grid
 												container
 												size={12}
-												flex={1}
+												flex={{
+													xs: 0.3,
+													md: 1,
+												}}
 												flexDirection="column"
 												justifyContent="center"
 												gap={0.4}
@@ -562,7 +576,12 @@ const NewBillboard = () => {
 											<Grid
 												container
 												size={12}
-												flex={0.5}
+												width={{
+													xs: "fit-content",
+												}}
+												flex={{
+													md: 0.5,
+												}}
 												flexDirection="column"
 												justifyContent="center"
 											>
@@ -580,6 +599,9 @@ const NewBillboard = () => {
 											</Grid>
 
 											<Grid
+												flex={{
+													xs: 0.1,
+												}}
 												container
 												justifyContent="center"
 												alignItems="center"
@@ -590,7 +612,10 @@ const NewBillboard = () => {
 														handleRemoveAlbum(index)
 													}}
 													sx={{
-														padding: 1,
+														padding: {
+															xs: 0.5,
+															md: 1,
+														},
 														borderRadius: 1,
 													}}
 												>

@@ -52,8 +52,7 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 					fontWeight="900"
 					sx={{
 						fontSize: {
-							xs: "calc(36px * 1)",
-							md: "calc(36px * 0.8)",
+							xs: "36px",
 						},
 						fontFamily: "'Outfit', sans-serif",
 						color: "#28231D",
@@ -307,6 +306,12 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 											lineHeight: 1,
 											color: "#28231D",
 											fontFamily: "'Outfit', sans-serif",
+											lineClamp: 2,
+											overflow: "hidden",
+											textOverflow: "ellipsis",
+											display: "-webkit-box",
+											WebkitLineClamp: 2,
+											WebkitBoxOrient: "vertical",
 										}}
 									>
 										{album.name}

@@ -6,6 +6,7 @@ import {
 	LOGO_DISCORD,
 	LOGO_GLASSES,
 } from "../common/assets"
+import dayjs from "dayjs"
 
 const Footer = () => {
 	return (
@@ -172,42 +173,44 @@ const Footer = () => {
 							lineHeight: 1,
 						}}
 					>
-						2025
-					</Typography>
-					<Typography
-						fontWeight={300}
-						sx={{
-							fontSize: "calc(16px * 0.8)",
-							fontFamily: "'Outfit', sans-serif",
-							color: "#28231D",
-							lineHeight: 1,
-						}}
-					>
-						– Created by Johnny Cat (
-						<a
-							href="https://www.instagram.com/srjohnnycat/"
-							target="_blank"
-							rel="noopener noreferrer"
-							style={{
+						{dayjs().year()}
+						<Typography
+							fontWeight={300}
+							sx={{
+								display: "inline",
+								fontSize: "calc(16px * 0.8)",
+								fontFamily: "'Outfit', sans-serif",
 								color: "#28231D",
-								textDecoration: "underline",
+								lineHeight: 1.4,
+								textTransform: "none",
 							}}
 						>
-							@SrJohnnyCat
-						</a>
-						) and Sergio Vargas (
-						<a
-							href="https://www.instagram.com/s.vrgs/"
-							target="_blank"
-							rel="noopener noreferrer"
-							style={{
-								color: "#28231D",
-								textDecoration: "underline",
-							}}
-						>
-							@s.vrgs
-						</a>
-						)
+							– Created by Johnny Cat (
+							<a
+								href="https://www.instagram.com/srjohnnycat/"
+								target="_blank"
+								rel="noopener noreferrer"
+								style={{
+									color: "#28231D",
+									textDecoration: "underline",
+								}}
+							>
+								@SrJohnnyCat
+							</a>
+							) and Sergio Vargas (
+							<a
+								href="https://www.instagram.com/s.vrgs/"
+								target="_blank"
+								rel="noopener noreferrer"
+								style={{
+									color: "#28231D",
+									textDecoration: "underline",
+								}}
+							>
+								@s.vrgs
+							</a>
+							)
+						</Typography>
 					</Typography>
 				</Grid>
 				<Grid

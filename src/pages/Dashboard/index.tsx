@@ -225,6 +225,7 @@ const DashboardPage = () => {
 								fontFamily: "'Outfit', sans-serif",
 								color: "#28231D",
 								lineHeight: 1,
+								textAlign: "center",
 							}}
 						>
 							Johnny’s Foolclub

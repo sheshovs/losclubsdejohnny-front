@@ -247,8 +247,7 @@ const BoletaInformation = ({
 					fontWeight={400}
 					sx={{
 						fontSize: {
-							xs: "calc(24px * 1)",
-							md: "calc(24px * 0.8)",
+							xs: "18px",
 						},
 						fontFamily: "'Outfit', sans-serif",
 						color: "#28231D",
@@ -331,8 +330,7 @@ const BoletaInformation = ({
 					fontWeight={400}
 					sx={{
 						fontSize: {
-							xs: "calc(24px * 1)",
-							md: "calc(24px * 0.8)",
+							xs: "18px",
 						},
 						fontFamily: "'Outfit', sans-serif",
 						color: "#28231D",

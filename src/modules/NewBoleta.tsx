@@ -1,4 +1,11 @@
-import { Divider, Grid, Rating, TextField, Typography } from "@mui/material"
+import {
+	Divider,
+	Grid,
+	Rating,
+	TextField,
+	Tooltip,
+	Typography,
+} from "@mui/material"
 import dayjs from "dayjs"
 import Icon from "../common/components/Icon"
 import { SELLO_VALIENTE } from "../common/assets"
@@ -462,23 +469,38 @@ const NewBoleta = ({
 							container
 							padding={2}
 							flex={1}
+							height="56px"
 							alignItems="center"
 						>
-							<Typography
-								fontWeight={400}
-								sx={{
-									textTransform: "uppercase",
-									fontSize: {
-										xs: "16px",
-									},
-									lineHeight: 1,
-									letterSpacing: "1.2px",
-									color: "#28231D",
-									fontFamily: "'Outfit', sans-serif",
-								}}
+							<Tooltip
+								title={track.name.length > 30 ? track.name : ""}
+								arrow
+								placement="top"
+								disableInteractive
 							>
-								{track.name}
-							</Typography>
+								<Typography
+									fontWeight={400}
+									sx={{
+										textTransform: "uppercase",
+										fontSize: {
+											xs: "16px",
+										},
+										lineHeight: 1,
+										letterSpacing: "1.2px",
+										color: "#28231D",
+										fontFamily: "'Outfit', sans-serif",
+										overflow: "hidden",
+										textOverflow: "ellipsis",
+										whiteSpace: "nowrap",
+										lineClamp: 1,
+										display: "-webkit-box",
+										WebkitLineClamp: 1,
+										WebkitBoxOrient: "vertical",
+									}}
+								>
+									{track.name}
+								</Typography>
+							</Tooltip>
 						</Grid>
 						<Divider
 							orientation="vertical"

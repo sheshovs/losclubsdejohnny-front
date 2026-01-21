@@ -47,13 +47,19 @@ const LoginPage = () => {
 			bgcolor="#F7F4EF"
 			alignItems="center"
 			justifyContent="center"
+			sx={{
+				padding: 2,
+			}}
 		>
 			<Paper
 				elevation={3}
 				sx={{
 					display: "flex",
 					flexDirection: "column",
-					padding: 10,
+					padding: {
+						xs: 6,
+						md: 10,
+					},
 					gap: 2,
 				}}
 			>
@@ -77,7 +83,7 @@ const LoginPage = () => {
 					</Typography>
 					<Link
 						to="/"
-						style={{ textDecoration: "none" }}
+						style={{ textDecoration: "none", textAlign: "center" }}
 					>
 						<Typography
 							fontWeight="900"
