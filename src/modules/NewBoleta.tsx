@@ -562,7 +562,7 @@ const NewBoleta = ({
 						/>
 					</Grid>
 				))}
-				{tracksOfAlbum.length < maxSongsToShow
+				{boletaRef && tracksOfAlbum.length < maxSongsToShow
 					? [...Array(defaultTracksToShow)].map((_, index) => (
 							<Grid
 								key={index}
