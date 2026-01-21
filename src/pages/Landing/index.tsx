@@ -130,26 +130,31 @@ function LandingPage() {
 						sx={{
 							position: "relative",
 							zIndex: 20,
+							overflowX: "auto",
 						}}
 					>
 						{selectedAlbum ? (
-							<NewBoleta
-								selectedAlbum={selectedAlbum}
-								tracksOfAlbum={tracksOfAlbum}
-								trackRatings={trackRatings}
-								heartsAverage={heartsAverage}
-								starsAverage={starsAverage}
-								totalAverage={totalAverage}
-								albumScore={albumScore}
-								albumStampImage={albumStampImage}
-								albumStamp={albumStamp}
-								braveStamp={braveStamp}
-								handleScoreChange={handleScoreChange}
-								handleFavoriteChange={handleFavoriteChange}
-								handleHighlightChange={handleHighlightChange}
-								handleScoreAlbumChange={handleScoreAlbumChange}
-								isResponsive={isResponsive}
-							/>
+							<Grid
+								container
+								minWidth={800}
+							>
+								<NewBoleta
+									selectedAlbum={selectedAlbum}
+									tracksOfAlbum={tracksOfAlbum}
+									trackRatings={trackRatings}
+									heartsAverage={heartsAverage}
+									starsAverage={starsAverage}
+									totalAverage={totalAverage}
+									albumScore={albumScore}
+									albumStampImage={albumStampImage}
+									albumStamp={albumStamp}
+									braveStamp={braveStamp}
+									handleScoreChange={handleScoreChange}
+									handleFavoriteChange={handleFavoriteChange}
+									handleHighlightChange={handleHighlightChange}
+									handleScoreAlbumChange={handleScoreAlbumChange}
+								/>
+							</Grid>
 						) : (
 							<Cartelera
 								onSelectAlbum={handleSelectAlbum}
