@@ -52,7 +52,8 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 					fontWeight="900"
 					sx={{
 						fontSize: {
-							xs: "36px",
+							xs: "24px",
+							md: "36px",
 						},
 						fontFamily: "'Outfit', sans-serif",
 						color: "#28231D",
@@ -73,12 +74,12 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 						fontWeight="300"
 						sx={{
 							fontSize: {
-								xs: "calc(16px * 1)",
-								md: "calc(16px * 0.8)",
+								xs: "14px",
+								md: "16px",
 							},
 							fontFamily: "'Outfit', sans-serif",
 							color: "#28231D",
-							letterSpacing: "calc(8px * 0.8)",
+							letterSpacing: "8px",
 							textTransform: "uppercase",
 							lineHeight: 1,
 						}}
@@ -298,9 +299,8 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 									<Typography
 										sx={{
 											fontSize: {
-												xs: "32px",
-												md: "calc(24px * 0.8)",
-												lg: "24px",
+												xs: "24px",
+												md: "32px",
 											},
 											fontWeight: "900",
 											lineHeight: 1,
@@ -319,9 +319,8 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 									<Typography
 										sx={{
 											fontSize: {
-												xs: "24px",
-												md: "calc(20px * 0.8)",
-												lg: "18px",
+												xs: "18px",
+												md: "24px",
 											},
 											fontWeight: "300",
 											lineHeight: 1,
