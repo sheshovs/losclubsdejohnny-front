@@ -218,8 +218,6 @@ function LandingPage() {
 						padding={{
 							xs: 2,
 							sm: 6,
-							md: 8,
-							lg: 10,
 						}}
 						sx={{
 							overflow: "auto",
