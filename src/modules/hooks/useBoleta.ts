@@ -9,8 +9,8 @@ import {
 } from "../../common/assets"
 import { useSpotifyAlbumById } from "../../query/useSpotifyQuery"
 import { SpotifyAlbumDetailResponse } from "../../interfaces/spotify"
-import { toJpeg } from "html-to-image"
 import download from "downloadjs"
+import html2canvas from "html2canvas"
 
 const stampsImg = {
 	approved: SELLO_APROBADO,
@@ -157,29 +157,42 @@ const useBoleta = () => {
 		setAlbumScore(numericValue)
 	}
 
-	const onExportBoleta = useCallback(() => {
+	const onExportBoleta = useCallback(async () => {
 		if (boletaRef.current === null) {
 			return
 		}
 
 		boletaRef.current.style.opacity = "1"
 
-		toJpeg(boletaRef.current, {
-			cacheBust: true,
-			canvasWidth: 800,
-      canvasHeight: boletaRef.current.clientHeight+0.5,
-			width: 800,
-      height: boletaRef.current.clientHeight+0.5,
-      pixelRatio: 1,
-		})
-			.then((dataUrl) => {
-				download(dataUrl, `boleta-${selectedAlbum?.name}.jpeg`)
-				boletaRef.current!.style.opacity = "0"
-			})
-			.catch((err) => {
-				console.log(err)
-				boletaRef.current!.style.opacity = "0"
-			})
+		await html2canvas(boletaRef.current, {
+			scale: 2,
+			useCORS: true,
+			backgroundColor: null,
+		}).then((canvas) => { 
+			const dataUrl = canvas.toDataURL("image/jpeg", 0.95);
+			download(dataUrl, `boleta-${selectedAlbum?.name}.jpeg`);
+			boletaRef.current!.style.opacity = "0"
+		});
+
+		// toJpeg(boletaRef.current, {
+		// 	cacheBust: true,
+		// 	canvasWidth: 800,
+    //   canvasHeight: boletaRef.current.clientHeight+0.5,
+		// 	width: 800,
+    //   height: boletaRef.current.clientHeight+0.5,
+    //   pixelRatio: 1,
+		// 	fetchRequestInit: {
+		// 		mode: "cors",
+		// 	}
+		// })
+		// 	.then((dataUrl) => {
+		// 		download(dataUrl, `boleta-${selectedAlbum?.name}.jpeg`)
+		// 		boletaRef.current!.style.opacity = "0"
+		// 	})
+		// 	.catch((err) => {
+		// 		console.log(err)
+		// 		boletaRef.current!.style.opacity = "0"
+		// 	})
 	}, [boletaRef, selectedAlbum])
 
 	const disableExport = useMemo(() => {

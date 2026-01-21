@@ -975,7 +975,6 @@ const NewBoleta = ({
 					<Grid
 						container
 						size={12}
-						padding={1.2}
 						flex={2}
 						justifyContent="center"
 						alignItems="center"
@@ -998,15 +997,19 @@ const NewBoleta = ({
 								}
 							}}
 							sx={{
+								position: "relative",
+								zIndex: 60,
 								input: {
-									fontSize: {
-										xs: "48px",
-									},
 									textAlign: "center",
 									fontWeight: "bold",
 									fontFamily: "'Outfit', sans-serif",
 									color: "#000",
 									padding: 0,
+									position: "relative",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									transform: "scale(3)",
 								},
 								fieldset: {
 									border: "none",
@@ -1017,6 +1020,7 @@ const NewBoleta = ({
 							variant="subtitle1"
 							sx={{
 								position: "absolute",
+								zIndex: 50,
 								right: 16,
 								bottom: 16,
 								fontWeight: 800,
