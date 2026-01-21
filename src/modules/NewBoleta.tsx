@@ -408,7 +408,7 @@ const NewBoleta = ({
 							sx={{
 								backgroundColor: trackRatings[track.id]?.isHighlighted
 									? "#f7db3680"
-									: "#f5f3ed",
+									: "",
 								cursor: "pointer",
 								"&:hover": {
 									backgroundColor: "#f7db3680",
@@ -576,9 +576,6 @@ const NewBoleta = ({
 									container
 									size={12}
 									height="44.8px"
-									sx={{
-										backgroundColor: "#f5f3ed",
-									}}
 								>
 									<Divider
 										orientation="vertical"
