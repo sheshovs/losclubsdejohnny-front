@@ -77,11 +77,11 @@ const NewBoleta = ({
 				<img
 					src={albumStampImage}
 					alt={albumStamp || "Sello del album"}
-					width={144}
+					width={180}
 					height="auto"
 					style={{
 						position: "absolute",
-						top: 57,
+						top: 68,
 						right: braveStamp ? 132 : 52,
 					}}
 				/>
@@ -95,7 +95,7 @@ const NewBoleta = ({
 					height="auto"
 					style={{
 						position: "absolute",
-						top: 50,
+						top: 68,
 						right: 30,
 						transform: "rotate(5deg)",
 					}}
@@ -108,6 +108,8 @@ const NewBoleta = ({
 				sx={{
 					border: "1px solid #28231D",
 					borderBottom: "none",
+					position: "relative",
+					zIndex: 100,
 				}}
 			>
 				<Grid
