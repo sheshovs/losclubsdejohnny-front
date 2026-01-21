@@ -285,8 +285,7 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 									<Typography
 										sx={{
 											fontSize: {
-												xs: "calc(12px * 1)",
-												lg: "calc(12px * 0.8)",
+												xs: "12px",
 											},
 											fontWeight: "300",
 											lineHeight: 1,
