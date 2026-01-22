@@ -7,6 +7,7 @@ import {
 	IconButton,
 	Modal,
 	Paper,
+	Skeleton,
 	Typography,
 } from "@mui/material"
 import { LOGO_GLASSES } from "../../common/assets"
@@ -31,7 +32,7 @@ const DashboardPage = () => {
 	const { enqueueSnackbar } = useSnackbar()
 	const navigate = useNavigate()
 	const { handleLogout } = useAuth()
-	const { data: allBillboards } = useGetBillboardsQuery()
+	const { data: allBillboards, isLoading } = useGetBillboardsQuery()
 
 	const [modalOpen, setModalOpen] = useState<string | null>("")
 	const [selectedBillboardId, setSelectedBillboardId] = useState<string | null>(
@@ -410,212 +411,233 @@ const DashboardPage = () => {
 						size={12}
 						gap={2.4}
 					>
-						{allBillboards?.map((billboard, index) => (
-							<Grid
-								key={index}
-								container
-								size={12}
-								alignItems="center"
-								justifyContent="space-between"
-							>
-								<Accordion sx={{ width: "100%" }}>
-									<AccordionSummary>
-										<Grid
-											container
-											size={12}
-											justifyContent="space-between"
-											alignItems="center"
-											minHeight={30}
-											gap={2}
-											sx={{
-												"&:hover": {
-													// select first child div
-													"& > div:first-of-type": {
-														opacity: 1,
-													},
-												},
-											}}
-										>
-											<Typography
-												fontWeight="500"
-												sx={{
-													fontSize: "calc(24px * 0.8)",
-													fontFamily: "'Outfit', sans-serif",
-													color: "#28231D",
-													lineHeight: 1,
-												}}
-											>
-												{`Cartelera ${dayjs(billboard.startDate).format(
-													"dddd DD",
-												)} - ${dayjs(billboard.endDate).format(
-													"dddd DD [de] MMMM",
-												)}`}
-											</Typography>
-
-											<Grid
-												container
-												flex={1}
-												justifyContent="flex-end"
-												alignItems="center"
-												gap={1}
-												sx={{
-													opacity: 0.5,
-													transition: "opacity 0.2s",
-												}}
-											>
-												<IconButton
-													sx={{
-														padding: 0,
-														borderRadius: 0.5,
-														svg: {
-															padding: 0.5,
-															width: "32px",
-															height: "32px",
-															color: "#28231D66",
-															transition: "color 0.2s",
-															"&:hover": {
-																color: "#28231D",
-															},
-														},
-													}}
-													onClick={(e) => {
-														e.stopPropagation()
-														onEditBillboard(billboard.uuid)
-													}}
-												>
-													<Icon icon="edit" />
-												</IconButton>
-												<IconButton
-													sx={{
-														padding: 0,
-														borderRadius: 0.5,
-														svg: {
-															padding: 0.5,
-															width: "32px",
-															height: "32px",
-															transition: "color 0.2s",
-															color: "#28231D66",
-															"&:hover": {
-																color: "#FF0000",
-															},
-														},
-													}}
-													onClick={(e) => {
-														e.stopPropagation()
-														setModalOpen(billboard.uuid)
-													}}
-												>
-													<Icon icon="delete" />
-												</IconButton>
-											</Grid>
-
-											{billboard.isActive ? (
-												<Typography
-													fontWeight="700"
-													sx={{
-														fontSize: "calc(16px * 0.8)",
-														fontFamily: "'Outfit', sans-serif",
-														color: "#4CAF50",
-														lineHeight: 1,
-													}}
-												>
-													Activa
-												</Typography>
-											) : (
-												<Button
-													variant="outlined"
-													onClick={(e) => {
-														e.stopPropagation()
-														setActiveBillboardMutation.mutate(billboard.uuid)
-													}}
-													sx={{
-														borderColor: "#28231D",
-														color: "#28231D",
-														padding: 0,
-														paddingX: 1,
-														fontSize: "14px",
-														textTransform: "none",
-														fontFamily: "'Outfit', sans-serif",
-													}}
-												>
-													Activar cartelera
-												</Button>
-											)}
-										</Grid>
-									</AccordionSummary>
-									<AccordionDetails>
-										<Grid
-											container
-											size={12}
-											flexDirection="column"
-											gap={2}
-										>
-											{billboard.albums.map(({ date, albumData }, idx) => (
+						{isLoading
+							? // Skeleton loader mientras carga
+								Array.from({ length: 5 }).map((_, index) => (
+									<Grid
+										key={index}
+										container
+										size={12}
+										alignItems="center"
+										justifyContent="space-between"
+									>
+										<Skeleton
+											variant="rectangular"
+											animation="wave"
+											width="100%"
+											height={56}
+											sx={{ borderRadius: 1 }}
+										/>
+									</Grid>
+								))
+							: allBillboards?.map((billboard, index) => (
+									<Grid
+										key={index}
+										container
+										size={12}
+										alignItems="center"
+										justifyContent="space-between"
+									>
+										<Accordion sx={{ width: "100%" }}>
+											<AccordionSummary>
 												<Grid
-													key={idx}
 													container
 													size={12}
 													justifyContent="space-between"
 													alignItems="center"
+													minHeight={30}
+													gap={2}
+													sx={{
+														"&:hover": {
+															// select first child div
+															"& > div:first-of-type": {
+																opacity: 1,
+															},
+														},
+													}}
 												>
 													<Typography
-														fontWeight="400"
+														fontWeight="500"
 														sx={{
-															fontSize: "calc(16px * 0.8)",
-															fontFamily: "'Outfit', sans-serif",
-															color: "#28231D",
-															lineHeight: 1,
-															textTransform: "capitalize",
-														}}
-													>
-														{dayjs(date).format("dddd DD")}
-													</Typography>
-													<Typography
-														fontWeight="600"
-														sx={{
-															fontSize: "calc(16px * 0.8)",
+															fontSize: "calc(24px * 0.8)",
 															fontFamily: "'Outfit', sans-serif",
 															color: "#28231D",
 															lineHeight: 1,
 														}}
 													>
-														{albumData.name} -{" "}
-														{albumData.artists
-															.map((artist) => artist.name)
-															.join(", ")}
+														{`Cartelera ${dayjs(billboard.startDate).format(
+															"dddd DD",
+														)} - ${dayjs(billboard.endDate).format(
+															"dddd DD [de] MMMM",
+														)}`}
 													</Typography>
-												</Grid>
-											))}
-										</Grid>
 
-										<Grid
-											container
-											size={12}
-											marginTop={2}
-											justifyContent="center"
-										>
-											<Button
-												variant="contained"
-												loading={isDownloading}
-												disabled={isDownloading}
-												onClick={async (e) => {
-													e.stopPropagation()
-													await handleDownloadBoletas(billboard.uuid)
-												}}
-												sx={{
-													backgroundColor: "#28231D",
-													paddingX: 2,
-													textTransform: "none",
-													fontFamily: "'Outfit', sans-serif",
-												}}
-											>
-												Descargar boletas
-											</Button>
-										</Grid>
-									</AccordionDetails>
-								</Accordion>
-							</Grid>
-						))}
+													<Grid
+														container
+														flex={1}
+														justifyContent="flex-end"
+														alignItems="center"
+														gap={1}
+														sx={{
+															opacity: 0.5,
+															transition: "opacity 0.2s",
+														}}
+													>
+														<IconButton
+															sx={{
+																padding: 0,
+																borderRadius: 0.5,
+																svg: {
+																	padding: 0.5,
+																	width: "32px",
+																	height: "32px",
+																	color: "#28231D66",
+																	transition: "color 0.2s",
+																	"&:hover": {
+																		color: "#28231D",
+																	},
+																},
+															}}
+															onClick={(e) => {
+																e.stopPropagation()
+																onEditBillboard(billboard.uuid)
+															}}
+														>
+															<Icon icon="edit" />
+														</IconButton>
+														<IconButton
+															sx={{
+																padding: 0,
+																borderRadius: 0.5,
+																svg: {
+																	padding: 0.5,
+																	width: "32px",
+																	height: "32px",
+																	transition: "color 0.2s",
+																	color: "#28231D66",
+																	"&:hover": {
+																		color: "#FF0000",
+																	},
+																},
+															}}
+															onClick={(e) => {
+																e.stopPropagation()
+																setModalOpen(billboard.uuid)
+															}}
+														>
+															<Icon icon="delete" />
+														</IconButton>
+													</Grid>
+
+													{billboard.isActive ? (
+														<Typography
+															fontWeight="700"
+															sx={{
+																fontSize: "calc(16px * 0.8)",
+																fontFamily: "'Outfit', sans-serif",
+																color: "#4CAF50",
+																lineHeight: 1,
+															}}
+														>
+															Activa
+														</Typography>
+													) : (
+														<Button
+															variant="outlined"
+															onClick={(e) => {
+																e.stopPropagation()
+																setActiveBillboardMutation.mutate(
+																	billboard.uuid,
+																)
+															}}
+															sx={{
+																borderColor: "#28231D",
+																color: "#28231D",
+																padding: 0,
+																paddingX: 1,
+																fontSize: "14px",
+																textTransform: "none",
+																fontFamily: "'Outfit', sans-serif",
+															}}
+														>
+															Activar cartelera
+														</Button>
+													)}
+												</Grid>
+											</AccordionSummary>
+											<AccordionDetails>
+												<Grid
+													container
+													size={12}
+													flexDirection="column"
+													gap={2}
+												>
+													{billboard.albums.map(({ date, albumData }, idx) => (
+														<Grid
+															key={idx}
+															container
+															size={12}
+															justifyContent="space-between"
+															alignItems="center"
+														>
+															<Typography
+																fontWeight="400"
+																sx={{
+																	fontSize: "calc(16px * 0.8)",
+																	fontFamily: "'Outfit', sans-serif",
+																	color: "#28231D",
+																	lineHeight: 1,
+																	textTransform: "capitalize",
+																}}
+															>
+																{dayjs(date).format("dddd DD")}
+															</Typography>
+															<Typography
+																fontWeight="600"
+																sx={{
+																	fontSize: "calc(16px * 0.8)",
+																	fontFamily: "'Outfit', sans-serif",
+																	color: "#28231D",
+																	lineHeight: 1,
+																}}
+															>
+																{albumData.name} -{" "}
+																{albumData.artists
+																	.map((artist) => artist.name)
+																	.join(", ")}
+															</Typography>
+														</Grid>
+													))}
+												</Grid>
+
+												<Grid
+													container
+													size={12}
+													marginTop={2}
+													justifyContent="center"
+												>
+													<Button
+														variant="contained"
+														loading={isDownloading}
+														disabled={isDownloading}
+														onClick={async (e) => {
+															e.stopPropagation()
+															await handleDownloadBoletas(billboard.uuid)
+														}}
+														sx={{
+															backgroundColor: "#28231D",
+															paddingX: 2,
+															textTransform: "none",
+															fontFamily: "'Outfit', sans-serif",
+														}}
+													>
+														Descargar boletas
+													</Button>
+												</Grid>
+											</AccordionDetails>
+										</Accordion>
+									</Grid>
+								))}
 					</Grid>
 				</Grid>
 			</Grid>
