@@ -19,8 +19,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import API from "../../api"
 import { API_QUERY_KEYS } from "../../query/keys"
 import { BillboardResponse } from "../../interfaces/billboard"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useSnackbar } from "notistack"
+import useDownloadBoleta from "../../modules/hooks/useDownloadBoleta"
+import NewBoleta from "../../modules/NewBoleta"
+import download from "downloadjs"
+import html2canvas from "html2canvas"
+import JSZip from "jszip"
 
 const DashboardPage = () => {
 	const { enqueueSnackbar } = useSnackbar()
@@ -29,6 +34,105 @@ const DashboardPage = () => {
 	const { data: allBillboards } = useGetBillboardsQuery()
 
 	const [modalOpen, setModalOpen] = useState<string | null>("")
+	const [selectedBillboardId, setSelectedBillboardId] = useState<string | null>(
+		null,
+	)
+	const [currentAlbumIndex, setCurrentAlbumIndex] = useState<number>(0)
+	const [isDownloading, setIsDownloading] = useState<boolean>(false)
+
+	const selectedAlbums = useMemo(() => {
+		if (!selectedBillboardId || !allBillboards) return []
+		const billboard = allBillboards.find(
+			(billboard) => billboard.uuid === selectedBillboardId,
+		)
+		if (!billboard) return []
+		return billboard.albums.map((albumEntry) => albumEntry.albumData)
+	}, [selectedBillboardId, allBillboards])
+
+	const { boletaRef, albumsData } = useDownloadBoleta({
+		selectedAlbums,
+	})
+
+	const handleDownloadBoletas = async (billboardId: string) => {
+		setIsDownloading(true)
+		setSelectedBillboardId(billboardId)
+
+		// Esperar un poco para que React actualice el estado y luego descargar
+		setTimeout(async () => {
+			const billboard = allBillboards?.find((b) => b.uuid === billboardId)
+			if (!billboard || !billboard.albums.length) {
+				setIsDownloading(false)
+				return
+			}
+
+			// Crear un nuevo ZIP
+			const zip = new JSZip()
+
+			// Generar todas las boletas y agregarlas al ZIP
+			for (let i = 0; i < billboard.albums.length; i++) {
+				setCurrentAlbumIndex(i)
+
+				// Esperar un poco para que el componente se actualice
+				await new Promise((resolve) => setTimeout(resolve, 500))
+
+				// Capturar la boleta actual
+				if (boletaRef.current) {
+					boletaRef.current.style.opacity = "1"
+
+					try {
+						const canvas = await html2canvas(boletaRef.current, {
+							scale: 2,
+							useCORS: true,
+							backgroundColor: null,
+						})
+
+						// Convertir canvas a blob
+						const dataUrl = canvas.toDataURL("image/jpeg", 0.95)
+						const base64Data = dataUrl.split(",")[1] // Remover el prefijo data:image/jpeg;base64,
+
+						// Agregar la imagen al ZIP
+						const fileName = `boleta-${billboard.albums[i].albumData.name}.jpeg`
+						zip.file(fileName, base64Data, { base64: true })
+
+						console.log(
+							`Boleta ${i + 1}/${billboard.albums.length} agregada al ZIP: ${fileName}`,
+						)
+					} catch (err) {
+						console.error(
+							`Error generating boleta for ${billboard.albums[i].albumData.name}:`,
+							err,
+						)
+					}
+
+					boletaRef.current.style.opacity = "0"
+				}
+			}
+
+			// Generar y descargar el archivo ZIP
+			try {
+				const zipBlob = await zip.generateAsync({ type: "blob" })
+				const zipFileName = `boletas-cartelera-${dayjs(billboard.startDate).format("DD-MM")}-${dayjs(billboard.endDate).format("DD-MM")}.zip`
+				download(zipBlob, zipFileName)
+
+				enqueueSnackbar(
+					`${billboard.albums.length} boletas descargadas en ${zipFileName}`,
+					{
+						variant: "success",
+					},
+				)
+			} catch (err) {
+				console.error("Error generating ZIP file:", err)
+				enqueueSnackbar("Error al generar el archivo ZIP", {
+					variant: "error",
+				})
+			}
+
+			// Reset
+			setCurrentAlbumIndex(0)
+			setSelectedBillboardId(null)
+			setIsDownloading(false)
+		}, 100)
+	}
 
 	const onLogout = () => {
 		handleLogout()
@@ -483,6 +587,31 @@ const DashboardPage = () => {
 												</Grid>
 											))}
 										</Grid>
+
+										<Grid
+											container
+											size={12}
+											marginTop={2}
+											justifyContent="center"
+										>
+											<Button
+												variant="contained"
+												loading={isDownloading}
+												disabled={isDownloading}
+												onClick={async (e) => {
+													e.stopPropagation()
+													await handleDownloadBoletas(billboard.uuid)
+												}}
+												sx={{
+													backgroundColor: "#28231D",
+													paddingX: 2,
+													textTransform: "none",
+													fontFamily: "'Outfit', sans-serif",
+												}}
+											>
+												Descargar boletas
+											</Button>
+										</Grid>
 									</AccordionDetails>
 								</Accordion>
 							</Grid>
@@ -490,6 +619,29 @@ const DashboardPage = () => {
 					</Grid>
 				</Grid>
 			</Grid>
+
+			{/* Componente NewBoleta oculto para html2canvas */}
+			{albumsData &&
+				albumsData.length > 0 &&
+				currentAlbumIndex < albumsData.length && (
+					<div style={{ position: "absolute", top: -9999, left: -9999 }}>
+						<NewBoleta
+							boletaRef={boletaRef}
+							selectedAlbum={albumsData[currentAlbumIndex].album}
+							tracksOfAlbum={albumsData[currentAlbumIndex].tracksOfAlbum}
+							trackRatings={albumsData[currentAlbumIndex].trackRatings}
+							heartsAverage={albumsData[currentAlbumIndex].heartsAverage}
+							starsAverage={albumsData[currentAlbumIndex].starsAverage}
+							totalAverage={albumsData[currentAlbumIndex].totalAverage}
+							albumScore={albumsData[currentAlbumIndex].albumScore}
+							albumStampImage={
+								albumsData[currentAlbumIndex].albumStampImage || ""
+							}
+							albumStamp={albumsData[currentAlbumIndex].albumStamp}
+							braveStamp={albumsData[currentAlbumIndex].braveStamp}
+						/>
+					</div>
+				)}
 		</>
 	)
 }

@@ -24,6 +24,7 @@
     "gsap": "^3.13.0",
     "html-to-image": "^1.11.13",
     "html2canvas": "^1.4.1",
+    "jszip": "^3.10.1",
     "motion": "^12.23.12",
     "notistack": "^3.0.2",
     "react": "^19.1.1",
@@ -33,6 +34,7 @@
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@types/downloadjs": "^1.4.6",
+    "@types/jszip": "^3.4.1",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.0",

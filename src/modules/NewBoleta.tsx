@@ -875,7 +875,7 @@ const NewBoleta = ({
 								fontFamily: "'Outfit', sans-serif",
 							}}
 						>
-							{heartsAverage ? heartsAverage : "-"} / 10
+							{heartsAverage ? heartsAverage : ""} / 10
 						</Typography>
 					</Grid>
 
@@ -902,7 +902,7 @@ const NewBoleta = ({
 								fontFamily: "'Outfit', sans-serif",
 							}}
 						>
-							{starsAverage ? starsAverage : "-"} / 10
+							{starsAverage ? starsAverage : ""} / 10
 						</Typography>
 					</Grid>
 
@@ -927,7 +927,7 @@ const NewBoleta = ({
 								fontFamily: "'Outfit', sans-serif",
 							}}
 						>
-							{totalAverage ? totalAverage : "-"} / 10
+							{totalAverage ? totalAverage : ""} / 10
 						</Typography>
 					</Grid>
 				</Grid>
@@ -981,48 +981,66 @@ const NewBoleta = ({
 						position="relative"
 						flexDirection="column"
 					>
-						<TextField
-							variant="outlined"
-							type="number"
-							slotProps={{
-								htmlInput: { step: 0.1, min: 1, max: 10 },
-							}}
-							placeholder="-"
-							value={albumScore !== null ? albumScore : ""}
-							onChange={handleScoreAlbumChange}
-							onInput={(e) => {
-								const input = e.target as HTMLInputElement
-								if (/^\d+(\.\d{0,1})?$/.test(input.value) === false) {
-									input.value = input.value.slice(0, input.value.length - 1)
-								}
-							}}
-							sx={{
-								position: "relative",
-								zIndex: 60,
-								input: {
-									textAlign: "center",
+						{boletaRef ? (
+							// Para descarga: usar Typography simple sin transforms
+							<Typography
+								sx={{
 									fontWeight: "bold",
 									fontFamily: "'Outfit', sans-serif",
 									color: "#000",
-									padding: 0,
+									fontSize: "48px",
+									lineHeight: 1,
+									textAlign: "center",
+									zIndex: 60,
+								}}
+							>
+								{albumScore !== null ? albumScore : ""}
+							</Typography>
+						) : (
+							// Para interfaz: usar TextField original
+							<TextField
+								variant="outlined"
+								type="number"
+								slotProps={{
+									htmlInput: { step: 0.1, min: 1, max: 10 },
+								}}
+								placeholder="-"
+								value={albumScore !== null ? albumScore : ""}
+								onChange={handleScoreAlbumChange}
+								onInput={(e) => {
+									const input = e.target as HTMLInputElement
+									if (/^\d+(\.\d{0,1})?$/.test(input.value) === false) {
+										input.value = input.value.slice(0, input.value.length - 1)
+									}
+								}}
+								sx={{
 									position: "relative",
-									display: "flex",
-									alignItems: "center",
-									justifyContent: "center",
-									transform: "scale(3)",
-								},
-								fieldset: {
-									border: "none",
-								},
-							}}
-						/>
+									zIndex: 60,
+									input: {
+										textAlign: "center",
+										fontWeight: "bold",
+										fontFamily: "'Outfit', sans-serif",
+										color: "#000",
+										padding: 0,
+										position: "relative",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										transform: "scale(3)",
+									},
+									fieldset: {
+										border: "none",
+									},
+								}}
+							/>
+						)}
 						<Typography
 							variant="subtitle1"
 							sx={{
 								position: "absolute",
 								zIndex: 50,
-								right: 16,
-								bottom: 16,
+								right: 10,
+								bottom: 10,
 								fontWeight: 800,
 								textTransform: "uppercase",
 								fontSize: "24px",

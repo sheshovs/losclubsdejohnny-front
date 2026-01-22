@@ -1,5 +1,12 @@
-import { Button, Grid, Paper, TextField, Typography } from "@mui/material"
-import React from "react"
+import {
+	Button,
+	Checkbox,
+	Grid,
+	Paper,
+	TextField,
+	Typography,
+} from "@mui/material"
+import React, { useEffect } from "react"
 import { useAuth } from "../../context/AuthContext"
 import { Link, useNavigate } from "react-router"
 
@@ -10,8 +17,28 @@ const LoginPage = () => {
 		username: "",
 		password: "",
 	})
+	const [rememberMe, setRememberMe] = React.useState(false)
 
 	const { username, password } = state
+
+	useEffect(() => {
+		const rememberedUsername = localStorage.getItem("rememberedUsername")
+		if (rememberedUsername) {
+			setState((prevState) => ({
+				...prevState,
+				username: rememberedUsername,
+			}))
+			setRememberMe(true)
+		}
+	}, [])
+
+	useEffect(() => {
+		if (rememberMe) {
+			localStorage.setItem("rememberedUsername", username)
+		} else {
+			localStorage.removeItem("rememberedUsername")
+		}
+	}, [rememberMe, username])
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target
@@ -127,6 +154,34 @@ const LoginPage = () => {
 							}
 						}}
 					/>
+					<Grid
+						container
+						alignItems="center"
+						onClick={() => setRememberMe(!rememberMe)}
+						sx={{
+							cursor: "pointer",
+							userSelect: "none",
+						}}
+					>
+						<Checkbox
+							checked={rememberMe}
+							disableRipple
+							sx={{
+								color: "#28231D",
+								"&.Mui-checked": { color: "#28231D" },
+							}}
+						/>
+						<Typography
+							sx={{
+								width: "fit-content",
+								fontSize: "16px",
+								fontFamily: "'Outfit', sans-serif",
+								color: "#28231D",
+							}}
+						>
+							Recuérdame
+						</Typography>
+					</Grid>
 				</Grid>
 				<Button
 					loading={loginMutation.isPending}
