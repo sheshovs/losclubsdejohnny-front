@@ -11,6 +11,7 @@ import { useSpotifyAlbumById } from "../../query/useSpotifyQuery"
 import { SpotifyAlbumDetailResponse } from "../../interfaces/spotify"
 import download from "downloadjs"
 import html2canvas from "html2canvas"
+import ReactGA from 'react-ga4';
 
 const stampsImg = {
 	approved: SELLO_APROBADO,
@@ -173,6 +174,11 @@ const useBoleta = () => {
 			download(dataUrl, `boleta-${selectedAlbum?.name}.jpeg`);
 			boletaRef.current!.style.opacity = "0"
 		});
+
+		ReactGA.event({
+			category: 'Boleta',
+			action: 'Descarga de boleta',
+		})
 
 		// toJpeg(boletaRef.current, {
 		// 	cacheBust: true,
