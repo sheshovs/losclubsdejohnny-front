@@ -180,6 +180,12 @@ const useBoleta = () => {
 			action: 'Descarga de boleta',
 		})
 
+		ReactGA.event({
+			category: 'Boleta',
+			action: 'Sello obtenido',
+			label: albumStamp || 'sin sello',
+		})
+
 		// toJpeg(boletaRef.current, {
 		// 	cacheBust: true,
 		// 	canvasWidth: 800,
@@ -199,7 +205,7 @@ const useBoleta = () => {
 		// 		console.log(err)
 		// 		boletaRef.current!.style.opacity = "0"
 		// 	})
-	}, [boletaRef, selectedAlbum])
+	}, [boletaRef, selectedAlbum, albumStamp])
 
 	const disableExport = useMemo(() => {
 		return !selectedAlbum || !albumStamp || albumScore === null
