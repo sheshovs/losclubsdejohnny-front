@@ -123,9 +123,11 @@ function LandingPage() {
 						container
 						size={12}
 						flex={1}
-						paddingY={6}
+						paddingY={{
+							xs: selectedAlbum ? 1 : 0,
+						}}
 						paddingX={{
-							xs: selectedAlbum ? 2.25 : 0,
+							xs: selectedAlbum ? 1 : 0,
 						}}
 						sx={{
 							position: "relative",
@@ -137,6 +139,9 @@ function LandingPage() {
 							<Grid
 								container
 								minWidth={800}
+								sx={{
+									transform: "scale(0.9)",
+								}}
 							>
 								<NewBoleta
 									selectedAlbum={selectedAlbum}
