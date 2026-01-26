@@ -13,12 +13,12 @@ import {
 import Icon from "../../common/components/Icon"
 import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router"
-import { useGetBillboardsQuery } from "../../query/useBillboardQuery"
+import { useGetReviewsQuery } from "../../query/useReviewQuery"
 import dayjs from "dayjs"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import API from "../../api"
 import { API_QUERY_KEYS } from "../../query/keys"
-import { BillboardResponse } from "../../interfaces/billboard"
+import { ReviewResponse } from "../../interfaces/review"
 import { useMemo, useState } from "react"
 import { useSnackbar } from "notistack"
 import useDownloadBoleta from "../../modules/hooks/useDownloadBoleta"
@@ -28,41 +28,39 @@ import html2canvas from "html2canvas"
 import JSZip from "jszip"
 import HeaderDashboard from "../../common/components/HeaderDashboard"
 import Sidebar from "../../common/components/Sidebar"
+import { useSidebarStore } from "../../store/SidebarStore"
 
-const DashboardPage = () => {
+const ReviewFridayPage = () => {
 	const { enqueueSnackbar } = useSnackbar()
 	const navigate = useNavigate()
 	const { handleLogout } = useAuth()
-	const { data: allBillboards, isLoading } = useGetBillboardsQuery()
+	const { isOpen } = useSidebarStore()
+	const { data: allReviews, isLoading } = useGetReviewsQuery()
 
 	const [modalOpen, setModalOpen] = useState<string | null>("")
-	const [selectedBillboardId, setSelectedBillboardId] = useState<string | null>(
-		null,
-	)
+	const [selectedReviewId, setSelectedReviewId] = useState<string | null>(null)
 	const [currentAlbumIndex, setCurrentAlbumIndex] = useState<number>(0)
 	const [isDownloading, setIsDownloading] = useState<boolean>(false)
 
 	const selectedAlbums = useMemo(() => {
-		if (!selectedBillboardId || !allBillboards) return []
-		const billboard = allBillboards.find(
-			(billboard) => billboard.uuid === selectedBillboardId,
-		)
-		if (!billboard) return []
-		return billboard.albums.map((albumEntry) => albumEntry.albumData)
-	}, [selectedBillboardId, allBillboards])
+		if (!selectedReviewId || !allReviews) return []
+		const review = allReviews.find((review) => review.uuid === selectedReviewId)
+		if (!review) return []
+		return review.albums.map((albumEntry) => albumEntry.albumData)
+	}, [selectedReviewId, allReviews])
 
 	const { boletaRef, albumsData } = useDownloadBoleta({
 		selectedAlbums,
 	})
 
-	const handleDownloadBoletas = async (billboardId: string) => {
+	const handleDownloadBoletas = async (reviewId: string) => {
 		setIsDownloading(true)
-		setSelectedBillboardId(billboardId)
+		setSelectedReviewId(reviewId)
 
 		// Esperar un poco para que React actualice el estado y luego descargar
 		setTimeout(async () => {
-			const billboard = allBillboards?.find((b) => b.uuid === billboardId)
-			if (!billboard || !billboard.albums.length) {
+			const review = allReviews?.find((b) => b.uuid === reviewId)
+			if (!review || !review.albums.length) {
 				setIsDownloading(false)
 				return
 			}
@@ -71,7 +69,7 @@ const DashboardPage = () => {
 			const zip = new JSZip()
 
 			// Generar todas las boletas y agregarlas al ZIP
-			for (let i = 0; i < billboard.albums.length; i++) {
+			for (let i = 0; i < review.albums.length; i++) {
 				setCurrentAlbumIndex(i)
 
 				// Esperar un poco para que el componente se actualice
@@ -93,15 +91,15 @@ const DashboardPage = () => {
 						const base64Data = dataUrl.split(",")[1] // Remover el prefijo data:image/jpeg;base64,
 
 						// Agregar la imagen al ZIP
-						const fileName = `boleta-${billboard.albums[i].albumData.name}.jpeg`
+						const fileName = `boleta-${review.albums[i].albumData.name}.jpeg`
 						zip.file(fileName, base64Data, { base64: true })
 
 						console.log(
-							`Boleta ${i + 1}/${billboard.albums.length} agregada al ZIP: ${fileName}`,
+							`Boleta ${i + 1}/${review.albums.length} agregada al ZIP: ${fileName}`,
 						)
 					} catch (err) {
 						console.error(
-							`Error generating boleta for ${billboard.albums[i].albumData.name}:`,
+							`Error generating boleta for ${review.albums[i].albumData.name}:`,
 							err,
 						)
 					}
@@ -113,11 +111,11 @@ const DashboardPage = () => {
 			// Generar y descargar el archivo ZIP
 			try {
 				const zipBlob = await zip.generateAsync({ type: "blob" })
-				const zipFileName = `boletas-cartelera-${dayjs(billboard.startDate).format("DD-MM")}-${dayjs(billboard.endDate).format("DD-MM")}.zip`
+				const zipFileName = `boletas-review-friday-${dayjs(review.startDate).format("DD-MM")}-${dayjs(review.endDate).format("DD-MM")}.zip`
 				download(zipBlob, zipFileName)
 
 				enqueueSnackbar(
-					`${billboard.albums.length} boletas descargadas en ${zipFileName}`,
+					`${review.albums.length} boletas descargadas en ${zipFileName}`,
 					{
 						variant: "success",
 					},
@@ -131,7 +129,7 @@ const DashboardPage = () => {
 
 			// Reset
 			setCurrentAlbumIndex(0)
-			setSelectedBillboardId(null)
+			setSelectedReviewId(null)
 			setIsDownloading(false)
 		}, 100)
 	}
@@ -141,62 +139,22 @@ const DashboardPage = () => {
 		navigate("/login")
 	}
 
-	const onEditBillboard = (billboardId: string) => {
-		navigate(`/dashboard/edit/${billboardId}`)
+	const onEditReview = (reviewId: string) => {
+		navigate(`/review-friday/edit/${reviewId}`)
 	}
 
 	const queryClient = useQueryClient()
 
-	const setActiveBillboardMutation = useMutation({
-		mutationFn: (billboardId: string) => API.billboard.setActive(billboardId),
-		onSuccess: (data) => {
-			// update the active billboard in the cache
-			const allBillboards = queryClient.getQueryData<BillboardResponse[]>(
-				API_QUERY_KEYS.billboard.all(),
-			)
-
-			if (allBillboards) {
-				const updatedBillboards = allBillboards.map((billboard) => {
-					if (billboard.isActive) {
-						return {
-							...billboard,
-							isActive: false,
-						}
-					}
-					return billboard
-				})
-
-				const finalBillboards = updatedBillboards.map((billboard) => {
-					if (billboard.uuid === data.uuid) {
-						return {
-							...billboard,
-							isActive: true,
-						}
-					}
-					return billboard
-				})
-
-				// update the cache
-				queryClient.setQueryData(
-					API_QUERY_KEYS.billboard.all(),
-					finalBillboards,
-				)
-			}
-		},
-	})
-
-	const deleteBillboardMutation = useMutation({
-		mutationFn: (billboardId: string) => API.billboard.delete(billboardId),
+	const deleteReviewMutation = useMutation({
+		mutationFn: (reviewId: string) => API.review.delete(reviewId),
 		onSuccess: (_, uuid) => {
-			queryClient.setQueryData<BillboardResponse[]>(
-				API_QUERY_KEYS.billboard.all(),
-				(oldBillboards) =>
-					oldBillboards
-						? oldBillboards.filter((billboard) => billboard.uuid !== uuid)
-						: [],
+			queryClient.setQueryData<ReviewResponse[]>(
+				API_QUERY_KEYS.review.all(),
+				(oldReviews) =>
+					oldReviews ? oldReviews.filter((review) => review.uuid !== uuid) : [],
 			)
 
-			enqueueSnackbar(`Cartelera eliminada correctamente`, {
+			enqueueSnackbar(`Review friday eliminado correctamente`, {
 				variant: `success`,
 			})
 			setModalOpen(null)
@@ -244,7 +202,7 @@ const DashboardPage = () => {
 							textAlign: "center",
 						}}
 					>
-						¿Estás seguro de que deseas eliminar esta cartelera?
+						¿Estás seguro de que deseas eliminar este review friday?
 					</Typography>
 					<Grid
 						container
@@ -275,7 +233,7 @@ const DashboardPage = () => {
 							color="error"
 							onClick={() => {
 								if (modalOpen) {
-									deleteBillboardMutation.mutate(modalOpen)
+									deleteReviewMutation.mutate(modalOpen)
 								}
 							}}
 						>
@@ -307,6 +265,12 @@ const DashboardPage = () => {
 					flex={1}
 					overflow="hidden"
 					justifyContent="center"
+					paddingLeft={{
+						xs: isOpen ? 27.5 : 8,
+					}}
+					sx={{
+						transition: "padding-left 0.3s ease",
+					}}
 				>
 					<Sidebar />
 
@@ -336,7 +300,7 @@ const DashboardPage = () => {
 						>
 							<Button
 								variant="contained"
-								onClick={() => navigate("/dashboard/new")}
+								onClick={() => navigate("/review-friday/new")}
 								sx={{
 									backgroundColor: "#28231D",
 									paddingX: 3,
@@ -345,7 +309,7 @@ const DashboardPage = () => {
 									fontFamily: "'Outfit', sans-serif",
 								}}
 							>
-								Crear cartelera
+								Crear review
 							</Button>
 						</Grid>
 						<Typography
@@ -357,7 +321,7 @@ const DashboardPage = () => {
 								lineHeight: 1,
 							}}
 						>
-							Carteleras
+							Review Friday
 						</Typography>
 
 						<Grid
@@ -384,8 +348,8 @@ const DashboardPage = () => {
 										/>
 									</Grid>
 								))
-							) : !allBillboards || allBillboards.length === 0 ? (
-								// Mensaje cuando no hay carteleras
+							) : !allReviews || allReviews.length === 0 ? (
+								// Mensaje cuando no hay reviews
 								<Grid
 									container
 									size={12}
@@ -403,11 +367,11 @@ const DashboardPage = () => {
 											lineHeight: 1.5,
 										}}
 									>
-										No existen carteleras todavía, ¿quieres crear una?
+										No existen elementos todavía, ¿quieres crear uno?
 									</Typography>
 									<Button
 										variant="contained"
-										onClick={() => navigate("/dashboard/new")}
+										onClick={() => navigate("/review-friday/new")}
 										sx={{
 											backgroundColor: "#28231D",
 											paddingX: 4,
@@ -420,11 +384,11 @@ const DashboardPage = () => {
 											},
 										}}
 									>
-										Crear primera cartelera
+										Crear primer review
 									</Button>
 								</Grid>
 							) : (
-								allBillboards.map((billboard, index) => (
+								allReviews.map((review, index) => (
 									<Grid
 										key={index}
 										container
@@ -459,9 +423,9 @@ const DashboardPage = () => {
 															lineHeight: 1,
 														}}
 													>
-														{`Cartelera ${dayjs(billboard.startDate).format(
+														{`Review ${dayjs(review.startDate).format(
 															"dddd DD",
-														)} - ${dayjs(billboard.endDate).format(
+														)} - ${dayjs(review.endDate).format(
 															"dddd DD [de] MMMM",
 														)}`}
 													</Typography>
@@ -494,7 +458,7 @@ const DashboardPage = () => {
 															}}
 															onClick={(e) => {
 																e.stopPropagation()
-																onEditBillboard(billboard.uuid)
+																onEditReview(review.uuid)
 															}}
 														>
 															<Icon icon="edit" />
@@ -516,47 +480,12 @@ const DashboardPage = () => {
 															}}
 															onClick={(e) => {
 																e.stopPropagation()
-																setModalOpen(billboard.uuid)
+																setModalOpen(review.uuid)
 															}}
 														>
 															<Icon icon="delete" />
 														</IconButton>
 													</Grid>
-
-													{billboard.isActive ? (
-														<Typography
-															fontWeight="700"
-															sx={{
-																fontSize: "calc(16px * 0.8)",
-																fontFamily: "'Outfit', sans-serif",
-																color: "#4CAF50",
-																lineHeight: 1,
-															}}
-														>
-															Activa
-														</Typography>
-													) : (
-														<Button
-															variant="outlined"
-															onClick={(e) => {
-																e.stopPropagation()
-																setActiveBillboardMutation.mutate(
-																	billboard.uuid,
-																)
-															}}
-															sx={{
-																borderColor: "#28231D",
-																color: "#28231D",
-																padding: 0,
-																paddingX: 1,
-																fontSize: "14px",
-																textTransform: "none",
-																fontFamily: "'Outfit', sans-serif",
-															}}
-														>
-															Activar cartelera
-														</Button>
-													)}
 												</Grid>
 											</AccordionSummary>
 											<AccordionDetails>
@@ -566,13 +495,13 @@ const DashboardPage = () => {
 													flexDirection="column"
 													gap={2}
 												>
-													{billboard.albums.map(({ date, albumData }, idx) => (
+													{review.albums.map(({ albumData }, idx) => (
 														<Grid
 															key={idx}
 															container
 															size={12}
-															justifyContent="space-between"
 															alignItems="center"
+															gap={1}
 														>
 															<Typography
 																fontWeight="400"
@@ -584,7 +513,7 @@ const DashboardPage = () => {
 																	textTransform: "capitalize",
 																}}
 															>
-																{dayjs(date).format("dddd DD")}
+																{idx + 1}.
 															</Typography>
 															<Typography
 																fontWeight="600"
@@ -616,7 +545,7 @@ const DashboardPage = () => {
 														disabled={isDownloading}
 														onClick={async (e) => {
 															e.stopPropagation()
-															await handleDownloadBoletas(billboard.uuid)
+															await handleDownloadBoletas(review.uuid)
 														}}
 														sx={{
 															backgroundColor: "#28231D",
@@ -664,4 +593,4 @@ const DashboardPage = () => {
 	)
 }
 
-export default DashboardPage
+export default ReviewFridayPage

@@ -22,32 +22,29 @@ import { SpotifyAlbumItem } from "../../../interfaces/spotify"
 import { useAuth } from "../../../context/AuthContext"
 import useDebounce from "../../../hooks/useDebounce"
 import { useSpotifyAlbumsByArtist } from "../../../query/useSpotifyQuery"
-import { BillboardPayload } from "../../../interfaces/billboard"
 import API from "../../../api"
 import Icon from "../../../common/components/Icon"
-import { useBillboardByUuidQuery } from "../../../query/useBillboardQuery"
 import HeaderDashboard from "../../../common/components/HeaderDashboard"
+import { ReviewPayload } from "../../../interfaces/review"
+import { useReviewByUuidQuery } from "../../../query/useReviewQuery"
 
 interface StateProps {
 	startDate: Dayjs | null
 	endDate: Dayjs | null
 	albums: {
-		date: Dayjs | null
 		albumId: string
 		albumData: SpotifyAlbumItem
 	}[]
 }
 
-const NewBillboard = () => {
+const NewReviewFriday = () => {
 	const params = useParams()
-	const billboardId = params.billboardId || null
+	const reviewId = params.reviewId || null
 	const { enqueueSnackbar } = useSnackbar()
 	const navigate = useNavigate()
 	const { handleLogout } = useAuth()
 
-	const { data: billboardData, isLoading } = useBillboardByUuidQuery(
-		billboardId!,
-	)
+	const { data: reviewData, isLoading } = useReviewByUuidQuery(reviewId!)
 
 	const [state, setState] = useState<StateProps>({
 		startDate: null,
@@ -61,18 +58,17 @@ const NewBillboard = () => {
 	const searchText = useDebounce(searchTerm, 500)
 
 	useEffect(() => {
-		if (billboardData) {
+		if (reviewData) {
 			setState({
-				startDate: dayjs(billboardData.startDate),
-				endDate: dayjs(billboardData.endDate),
-				albums: billboardData.albums.map((album) => ({
-					date: dayjs(album.date),
+				startDate: dayjs(reviewData.startDate),
+				endDate: dayjs(reviewData.endDate),
+				albums: reviewData.albums.map((album) => ({
 					albumId: album.albumId,
 					albumData: album.albumData,
 				})),
 			})
 		}
-	}, [billboardData])
+	}, [reviewData])
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchTerm(event.target.value)
@@ -115,16 +111,6 @@ const NewBillboard = () => {
 		setSearchTerm("")
 	}
 
-	const handleAlbumDateChange = (index: number, date: Dayjs) => {
-		const updatedAlbums = albums.map((item, i) =>
-			i === index ? { ...item, date } : item,
-		)
-		setState((prevState) => ({
-			...prevState,
-			albums: updatedAlbums.sort((a, b) => a.date!.unix() - b.date!.unix()),
-		}))
-	}
-
 	const handleRemoveAlbum = (index: number) => {
 		const updatedAlbums = albums.filter((_, i) => i !== index)
 		setState((prevState) => ({
@@ -138,53 +124,55 @@ const NewBillboard = () => {
 		navigate("/login")
 	}
 
-	const isDisabledCreateBillboard =
-		!startDate || !endDate || albums.length === 0
+	const isDisabledCreateReview =
+		!startDate ||
+		!endDate ||
+		albums.length === 0 ||
+		albums.some((album) => !album.albumData.id)
 
-	const { mutate: billboardMutation, isPending: isCreatingBillboard } =
+	const { mutate: reviewMutation, isPending: isCreatingReview } = useMutation({
+		mutationFn: (payload: ReviewPayload) => API.review.create(payload),
+		onSuccess: () => {
+			navigate("/review-friday")
+			enqueueSnackbar(`Review creado correctamente`, {
+				variant: `success`,
+			})
+		},
+		onError: (error) => {
+			console.log(error)
+			enqueueSnackbar(`Error al crear review`, { variant: `error` })
+		},
+	})
+
+	const { mutate: updateReviewMutation, isPending: isUpdatingReview } =
 		useMutation({
-			mutationFn: (payload: BillboardPayload) => API.billboard.create(payload),
+			mutationFn: (payload: ReviewPayload) =>
+				API.review.update(reviewId!, payload),
 			onSuccess: () => {
-				navigate("/dashboard")
-				enqueueSnackbar(`Cartelera creada correctamente`, {
+				navigate("/review-friday")
+				enqueueSnackbar(`Review actualizado correctamente`, {
 					variant: `success`,
 				})
 			},
 			onError: (error) => {
 				console.log(error)
-				enqueueSnackbar(`Error al crear la cartelera`, { variant: `error` })
-			},
-		})
-
-	const { mutate: updateBillboardMutation, isPending: isUpdatingBillboard } =
-		useMutation({
-			mutationFn: (payload: BillboardPayload) =>
-				API.billboard.update(billboardId!, payload),
-			onSuccess: () => {
-				navigate("/dashboard")
-				enqueueSnackbar(`Cartelera actualizada correctamente`, {
-					variant: `success`,
-				})
-			},
-			onError: (error) => {
-				console.log(error)
-				enqueueSnackbar(`Error al actualizar la cartelera`, {
+				enqueueSnackbar(`Error al actualizar el review`, {
 					variant: `error`,
 				})
 			},
 		})
 
-	const handleCreateBillboard = () => {
-		const payload: BillboardPayload = state
+	const handleCreateReview = () => {
+		const payload: ReviewPayload = state
 
-		if (billboardId) {
-			return updateBillboardMutation(payload)
+		if (reviewId) {
+			return updateReviewMutation(payload)
 		}
-		billboardMutation(payload)
+		reviewMutation(payload)
 	}
 
 	const handleGoBack = () => {
-		navigate("/dashboard")
+		navigate("/review-friday")
 	}
 
 	return (
@@ -293,7 +281,7 @@ const NewBillboard = () => {
 								lineHeight: 1,
 							}}
 						>
-							{billboardId ? "Editar cartelera" : "Nueva cartelera"}
+							{reviewId ? "Editar Review Friday" : "Nuevo Review Friday"}
 						</Typography>
 
 						<Grid
@@ -396,8 +384,8 @@ const NewBillboard = () => {
 								Agregar albumes
 							</Typography>
 
-							{albums.map(({ date, albumData }, index) => {
-								const showSelectedAlbum = dayjs(date).isValid() && albumData.id
+							{albums.map(({ albumData }, index) => {
+								const showSelectedAlbum = albumData.id
 								const album = albumData
 								return showSelectedAlbum ? (
 									<Grid
@@ -408,33 +396,6 @@ const NewBillboard = () => {
 										padding={1}
 										flexDirection="column"
 									>
-										<Grid
-											container
-											width="fit-content"
-											alignItems="center"
-											gap={1}
-										>
-											<Icon
-												icon="calendar"
-												sx={{
-													color: "#28231D",
-													fontSize: "16px",
-												}}
-											/>
-											<Typography
-												sx={{
-													fontSize: "calc(16px * 0.8)",
-													fontWeight: "300",
-													lineHeight: 1,
-													letterSpacing: "calc(5px * 0.8)",
-													textTransform: "uppercase",
-													color: "#28231D",
-													fontFamily: "'Outfit', sans-serif",
-												}}
-											>
-												{dayjs(date).format("dddd DD").toLocaleUpperCase()}
-											</Typography>
-										</Grid>
 										<Grid
 											container
 											flex={1}
@@ -576,40 +537,8 @@ const NewBillboard = () => {
 										container
 										width={500}
 										justifyContent="space-between"
-										paddingRight={1}
 										key={index}
 									>
-										<LocalizationProvider
-											dateAdapter={AdapterDayjs}
-											adapterLocale="es"
-										>
-											<DatePicker
-												label="Dia de la semana"
-												value={date}
-												onChange={(newValue) =>
-													handleAlbumDateChange(index, newValue!)
-												}
-												sx={{
-													width: "200px",
-													height: "40px",
-													label: {
-														fontSize: "14px",
-														top: "-6px",
-													},
-													"label[data-shrink='true']": {
-														top: "1px",
-													},
-													div: {
-														fontSize: "14px",
-														height: "40px",
-														div: {
-															padding: 0,
-															alignItems: "center",
-														},
-													},
-												}}
-											/>
-										</LocalizationProvider>
 										<Autocomplete
 											options={artistAlbumsData ? artistAlbumOptions : []}
 											loading={isLoadingData}
@@ -667,7 +596,7 @@ const NewBillboard = () => {
 												handleSelectAlbum(index, newValue?.value || "")
 											}}
 											sx={{
-												width: "200px",
+												width: "calc(100% - 48px)",
 												height: "40px",
 												label: {
 													fontSize: "14px",
@@ -717,95 +646,85 @@ const NewBillboard = () => {
 								)
 							})}
 
-							{albums.length <= 2 ? (
+							<Grid
+								container
+								size={12}
+								onClick={() => {
+									// Add new album logic
+									setState((prevState) => ({
+										...prevState,
+										albums: [
+											...prevState.albums,
+											{
+												albumId: "",
+												albumData: {} as SpotifyAlbumItem,
+											},
+										],
+									}))
+								}}
+								sx={{
+									cursor: "pointer",
+									gap: 1.9,
+									borderRadius: "6px",
+									"&:hover": {
+										backgroundColor: "#28231D29",
+									},
+								}}
+								alignItems="center"
+							>
+								<IconButton
+									sx={{
+										"&:hover": {
+											backgroundColor: "transparent",
+										},
+									}}
+								>
+									<Icon
+										icon="add"
+										sx={{
+											color: "#28231D",
+										}}
+									/>
+								</IconButton>
 								<Grid
 									container
 									size={12}
-									onClick={() => {
-										// si existe un album sin seleccionar, no agregar otro
-										const hasEmptyAlbum = albums.some(
-											(item) => !item.albumId || !dayjs(item.date).isValid(),
-										)
-										if (hasEmptyAlbum) return
-										// Add new album logic
-										setState((prevState) => ({
-											...prevState,
-											albums: [
-												...prevState.albums,
-												{
-													date: null,
-													albumId: "",
-													albumData: {} as SpotifyAlbumItem,
-												},
-											],
-										}))
-									}}
-									sx={{
-										cursor: "pointer",
-										gap: 1.9,
-										borderRadius: "6px",
-										"&:hover": {
-											backgroundColor: "#28231D29",
-										},
-									}}
-									alignItems="center"
+									flex={1}
+									flexDirection="column"
+									justifyContent="center"
+									gap={1.2}
+									paddingY={1.8}
 								>
-									<IconButton
+									<Typography
 										sx={{
-											"&:hover": {
-												backgroundColor: "transparent",
+											fontSize: {
+												xs: "calc(16px * 0.8)",
+												md: "calc(20px * 0.8)",
+												lg: "calc(24px * 0.8)",
 											},
+											fontWeight: "300",
+											lineHeight: 1,
+											color: "#28231D",
+											fontFamily: "'Outfit', sans-serif",
 										}}
 									>
-										<Icon
-											icon="add"
-											sx={{
-												color: "#28231D",
-											}}
-										/>
-									</IconButton>
-									<Grid
-										container
-										size={12}
-										flex={1}
-										flexDirection="column"
-										justifyContent="center"
-										gap={1.2}
-										paddingY={1.8}
-									>
-										<Typography
-											sx={{
-												fontSize: {
-													xs: "calc(16px * 0.8)",
-													md: "calc(20px * 0.8)",
-													lg: "calc(24px * 0.8)",
-												},
-												fontWeight: "300",
-												lineHeight: 1,
-												color: "#28231D",
-												fontFamily: "'Outfit', sans-serif",
-											}}
-										>
-											Agregar nuevo álbum
-										</Typography>
-									</Grid>
+										Agregar nuevo álbum
+									</Typography>
 								</Grid>
-							) : (
-								<Button
-									loading={
-										billboardId ? isUpdatingBillboard : isCreatingBillboard
-									}
-									disabled={isDisabledCreateBillboard}
-									variant="contained"
-									fullWidth
-									sx={{
-										backgroundColor: "#28231D",
-									}}
-									onClick={handleCreateBillboard}
-								>
-									{billboardId ? "Guardar cambios" : "Crear cartelera"}
-								</Button>
-							)}
+							</Grid>
+
+							<Button
+								loading={reviewId ? isUpdatingReview : isCreatingReview}
+								disabled={isDisabledCreateReview}
+								variant="contained"
+								fullWidth
+								sx={{
+									backgroundColor: "#28231D",
+								}}
+								onClick={handleCreateReview}
+							>
+								{reviewId ? "Guardar cambios" : "Crear Review Friday"}
+							</Button>
 						</Grid>
 					</Grid>
 				</Grid>
@@ -814,4 +733,4 @@ const NewBillboard = () => {
 	)
 }
 
-export default NewBillboard
+export default NewReviewFriday

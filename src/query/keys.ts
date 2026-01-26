@@ -9,7 +9,11 @@ export const API_QUERY_KEYS = {
     active: () => [`billboard`, `active`],
     all: () => [`billboard`, `all`],
     byUuid: (billboardId: string) => [`billboard`, `byUuid`, billboardId],
-  }
+  },
+  review: {
+    all: () => [`review`, `all`],
+    byUuid: (reviewId: string) => [`review`, `byUuid`, reviewId],
+  },
 }
 
 export type QueryOptions<T, V extends QueryKey = string[], K = T> = Omit<

@@ -124,7 +124,7 @@ function LandingPage() {
 						size={12}
 						flex={1}
 						paddingY={{
-							xs: selectedAlbum ? 1 : 0,
+							xs: selectedAlbum ? 1 : 6,
 						}}
 						paddingX={{
 							xs: selectedAlbum ? 1 : 0,

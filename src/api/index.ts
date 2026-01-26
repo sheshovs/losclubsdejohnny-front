@@ -1,6 +1,7 @@
 import { getAxiosInstance } from "../config/axios"
 import { SpotifyTokenResponse } from "../context/AuthContext"
 import { BillboardPayload, BillboardResponse } from "../interfaces/billboard"
+import { ReviewPayload, ReviewResponse } from "../interfaces/review"
 import { SpotifyAlbumDetailResponse, SpotifyAlbumResponse } from "../interfaces/spotify"
 
 const backendInstance = getAxiosInstance( "user_token", import.meta.env.VITE_BACKEND_URL)
@@ -53,6 +54,24 @@ const API = {
     },
     getByUuid: (billboardId: string): Promise<BillboardResponse> => {
       return backendInstance.get(`/billboard/${billboardId}`)
+    }
+  },
+
+  review: {
+    create: (payload: ReviewPayload): Promise<void> => {
+      return backendInstance.post(`/review`, payload)
+    },
+    update: (reviewId: string, payload: ReviewPayload): Promise<void> => {
+      return backendInstance.put(`/review/${reviewId}`, payload)
+    },
+    delete: (reviewId: string): Promise<void> => {
+      return backendInstance.delete(`/review/${reviewId}`)
+    },
+    getAll: (): Promise<ReviewResponse[]> => {
+      return backendInstance.get(`/review`)
+    },
+    getByUuid: (reviewId: string): Promise<ReviewResponse> => {
+      return backendInstance.get(`/review/${reviewId}`)
     }
   }
 }
