@@ -180,11 +180,13 @@ const useBoleta = () => {
 			action: 'Descarga de boleta',
 		})
 
-		ReactGA.event({
-			category: 'Boleta',
-			action: 'Sello obtenido',
-			label: albumStamp || 'sin sello',
-		})
+		if(albumStamp) {
+			ReactGA.event({
+				category: 'Boleta',
+				action: `Sello obtenido: ${albumStamp}`,
+			})
+		}
+		
 
 		// toJpeg(boletaRef.current, {
 		// 	cacheBust: true,
