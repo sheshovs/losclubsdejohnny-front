@@ -122,7 +122,7 @@ const AlbumSearch = ({ setSpotifyAlbumId, isResponsive }: AlbumSearchProps) => {
 				>
 					2. Califica cada canción usando nuestra{" "}
 					<a
-						href="https://www.instagram.com/p/DGOxeKExxJb/?img_index=1"
+						href="https://www.instagram.com/p/DT6LsOmkVdg/"
 						target="_blank"
 						rel="noopener noreferrer"
 						style={{
