@@ -19,12 +19,13 @@ const API = {
     return backendInstance.get(`/auth/spotify/token`)
   },
   // get spotify albums by artist name
-  getSpotifyAlbumsByArtist: (search: string): Promise<SpotifyAlbumResponse> => {
+  getSpotifyAlbumsByArtist: (search: string, offset: number = 0): Promise<SpotifyAlbumResponse> => {
     return spotifyInstance.get(`/search`, {
       params: {
         q: search,
         type: `album`,
         limit: 20,
+        offset: offset,
       },
     })
   },

@@ -7,7 +7,7 @@ import {
 	Typography,
 } from "@mui/material"
 import Footer from "./Footer"
-import React, { useMemo, useState } from "react"
+import React, { useMemo, useState, useCallback } from "react"
 import { useSpotifyAlbumsByArtist } from "../query/useSpotifyQuery"
 import useDebounce from "../hooks/useDebounce"
 import dayjs from "dayjs"
@@ -27,14 +27,33 @@ const AlbumSearch = ({ setSpotifyAlbumId, isResponsive }: AlbumSearchProps) => {
 		setSearchTerm(event.target.value)
 	}
 
-	const { data: artistAlbumsData, isLoading: isLoadingData } =
-		useSpotifyAlbumsByArtist({
-			artist: searchText,
-		})
+	const {
+		data: artistAlbumsData,
+		isLoading: isLoadingData,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = useSpotifyAlbumsByArtist({
+		artist: searchText,
+	})
 
 	const artistAlbums = useMemo(() => {
-		return artistAlbumsData?.items || []
+		return artistAlbumsData?.pages.flatMap((page) => page.albums.items) || []
 	}, [artistAlbumsData])
+
+	// Manejo del scroll infinito
+	const handleScroll = useCallback(
+		(e: React.UIEvent<HTMLDivElement>) => {
+			const { scrollTop, scrollHeight, clientHeight } = e.currentTarget
+			// Cargar más cuando esté cerca del final (100px antes del final)
+			if (scrollHeight - scrollTop <= clientHeight + 100) {
+				if (hasNextPage && !isFetchingNextPage) {
+					fetchNextPage()
+				}
+			}
+		},
+		[hasNextPage, isFetchingNextPage, fetchNextPage],
+	)
 
 	const handleSelectAlbum = (albumId: string) => {
 		setSpotifyAlbumId(albumId)
@@ -217,12 +236,53 @@ const AlbumSearch = ({ setSpotifyAlbumId, isResponsive }: AlbumSearchProps) => {
 					</Grid>
 				)}
 
+				{!isLoadingData &&
+					artistAlbums.length === 0 &&
+					searchText.length >= 3 && (
+						<Grid
+							container
+							size={12}
+							maxHeight={418}
+							overflow="auto"
+							justifyContent="center"
+							alignItems="center"
+							sx={{
+								position: isResponsive ? "absolute" : "relative",
+								width: isResponsive ? "calc(100% - 72px)" : "100%",
+								top:
+									textFieldRef.current && isResponsive
+										? textFieldRef.current.getBoundingClientRect()["bottom"] - 4
+										: "-4px",
+								backgroundColor: "#ffffff",
+								borderBottomLeftRadius: "6px",
+								borderBottomRightRadius: "6px",
+								border: "1px solid #28231D",
+								borderTop: "none",
+								paddingTop: 3,
+								paddingBottom: 3,
+							}}
+						>
+							<Typography
+								sx={{
+									fontSize: "calc(16px * 0.8)",
+									fontWeight: "400",
+									color: "#28231DB2",
+									fontFamily: "'Outfit', sans-serif",
+									textAlign: "center",
+								}}
+							>
+								No se encontraron resultados para "{searchText}"
+							</Typography>
+						</Grid>
+					)}
+
 				{artistAlbums.length > 0 && (
 					<Grid
 						container
 						size={12}
 						maxHeight={418}
 						overflow="auto"
+						onScroll={handleScroll}
 						sx={{
 							position: isResponsive ? "absolute" : "relative",
 							width: isResponsive ? "calc(100% - 72px)" : "100%",
@@ -364,6 +424,25 @@ const AlbumSearch = ({ setSpotifyAlbumId, isResponsive }: AlbumSearchProps) => {
 								)}
 							</React.Fragment>
 						))}
+
+						{/* Indicador de carga para scroll infinito */}
+						{isFetchingNextPage && (
+							<Grid
+								container
+								size={12}
+								justifyContent="center"
+								sx={{
+									padding: 2,
+								}}
+							>
+								<CircularProgress
+									size={20}
+									sx={{
+										color: "#28231D",
+									}}
+								/>
+							</Grid>
+						)}
 					</Grid>
 				)}
 			</Grid>

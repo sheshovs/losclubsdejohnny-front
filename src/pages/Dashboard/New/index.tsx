@@ -13,7 +13,7 @@ import { useNavigate, useParams } from "react-router"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useCallback } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import "dayjs/locale/es"
 import { useMutation } from "@tanstack/react-query"
@@ -78,21 +78,49 @@ const NewBillboard = () => {
 		setSearchTerm(event.target.value)
 	}
 
-	const { data: artistAlbumsData, isLoading: isLoadingData } =
-		useSpotifyAlbumsByArtist({
-			artist: searchText,
-		})
+	const {
+		data: artistAlbumsData,
+		isLoading: isLoadingData,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = useSpotifyAlbumsByArtist({
+		artist: searchText,
+	})
+
+	// Combinar todos los álbums de todas las páginas
+	const allArtistAlbums = useMemo(() => {
+		if (!artistAlbumsData) return []
+		return artistAlbumsData.pages.flatMap((page) => page.albums.items)
+	}, [artistAlbumsData])
 
 	const artistAlbumOptions = useMemo(() => {
-		if (!artistAlbumsData) return []
-		return artistAlbumsData.items.map((album) => ({
+		const options = allArtistAlbums.map((album) => ({
 			label: `${album.name} - ${album.artists
 				.map((artist) => artist.name)
 				.join(", ")}`,
 			value: album.id,
 			img: album.images[0]?.url || "",
 		}))
-	}, [artistAlbumsData])
+
+		return options
+	}, [allArtistAlbums])
+
+	// Handler para el scroll infinito en el listbox
+	const handleListboxScroll = useCallback(
+		(event: React.SyntheticEvent) => {
+			const listboxNode = event.currentTarget as HTMLElement
+			const { scrollTop, scrollHeight, clientHeight } = listboxNode
+
+			// Cargar más cuando esté cerca del final (10px antes del final)
+			if (scrollHeight - scrollTop <= clientHeight + 10) {
+				if (hasNextPage && !isFetchingNextPage) {
+					fetchNextPage()
+				}
+			}
+		},
+		[hasNextPage, isFetchingNextPage, fetchNextPage],
+	)
 
 	const handleDateChange = (name: string, value: Dayjs) => {
 		setState((prevState) => ({
@@ -103,7 +131,7 @@ const NewBillboard = () => {
 
 	const handleSelectAlbum = (index: number, albumId: string) => {
 		const albumData =
-			artistAlbumsData?.items.find((album) => album.id === albumId) ||
+			allArtistAlbums?.find((album) => album.id === albumId) ||
 			({} as SpotifyAlbumItem)
 		const updatedAlbums = albums.map((item, i) =>
 			i === index ? { ...item, albumId, albumData } : item,
@@ -611,53 +639,75 @@ const NewBillboard = () => {
 											/>
 										</LocalizationProvider>
 										<Autocomplete
-											options={artistAlbumsData ? artistAlbumOptions : []}
+											options={
+												allArtistAlbums.length > 0 ? artistAlbumOptions : []
+											}
 											loading={isLoadingData}
 											renderInput={(params) => (
 												<TextField
 													{...params}
 													label="Buscar álbum"
 													onChange={handleChange}
+													InputProps={{
+														...params.InputProps,
+														endAdornment: (
+															<>
+																{isFetchingNextPage ? (
+																	<CircularProgress
+																		color="inherit"
+																		size={16}
+																	/>
+																) : null}
+																{params.InputProps.endAdornment}
+															</>
+														),
+													}}
 												/>
 											)}
 											renderOption={(
 												props,
-												option: { label: string; value: string; img: string },
-											) => (
-												<MenuItem
-													{...props}
-													key={option.value}
-													sx={{
-														display: "flex",
-														gap: 1,
-													}}
-												>
-													<img
-														src={option.img}
-														alt={option.label}
-														style={{
-															width: "calc(50px * 0.8)",
-															height: "calc(50px * 0.8)",
-															borderRadius: "2px",
-															boxShadow:
-																"0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px 1px rgba(0, 0, 0, 0.1)",
-														}}
-													/>
-													<Typography
+												option: {
+													label: string
+													value: string
+													img: string
+												},
+											) => {
+												return (
+													<MenuItem
+														{...props}
+														key={option.value}
 														sx={{
-															fontSize: "14px",
-															fontWeight: "500",
-															lineHeight: 1,
-															color: "#28231D",
-															fontFamily: "'Outfit', sans-serif",
+															display: "flex",
+															gap: 1,
 														}}
 													>
-														{option.label.length > 30
-															? option.label.slice(0, 27) + "..."
-															: option.label}
-													</Typography>
-												</MenuItem>
-											)}
+														<img
+															src={option.img}
+															alt={option.label}
+															style={{
+																width: "calc(50px * 0.8)",
+																height: "calc(50px * 0.8)",
+																borderRadius: "2px",
+																boxShadow:
+																	"0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px 1px rgba(0, 0, 0, 0.1)",
+															}}
+														/>
+														<Typography
+															sx={{
+																fontSize: "14px",
+																fontWeight: "500",
+																lineHeight: 1,
+																color: "#28231D",
+																fontFamily: "'Outfit', sans-serif",
+															}}
+														>
+															{option.label.length > 30
+																? option.label.slice(0, 27) + "..."
+																: option.label}
+														</Typography>
+													</MenuItem>
+												)
+											}}
 											inputValue={
 												Object.keys(albumData).length > 0
 													? `${album.name} - ${album.artists[0].name}`
@@ -692,6 +742,15 @@ const NewBillboard = () => {
 												paper: {
 													sx: {
 														width: "fit-content",
+														maxHeight: "300px",
+														overflow: "auto",
+													},
+													onScroll: handleListboxScroll,
+												},
+												listbox: {
+													sx: {
+														maxHeight: "none",
+														overflow: "visible",
 													},
 												},
 											}}

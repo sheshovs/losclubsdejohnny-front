@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { API_QUERY_KEYS } from "./keys";
 import API from "../api";
 
@@ -13,15 +13,30 @@ export const useSpotifyAlbumsByArtist = ({
 }: {
   artist: string;
 })=> 
-  useQuery({
+  useInfiniteQuery({
     queryKey: API_QUERY_KEYS.spotifyAlbumsByArtist(artist),
-    queryFn: () => API.getSpotifyAlbumsByArtist(artist),
+    queryFn: ({ pageParam = 0 }) => API.getSpotifyAlbumsByArtist(artist, pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage.albums.next) return undefined;
+      // Calculate next offset based on current pages loaded
+      return allPages.length * 20;
+    },
     enabled: artist.length >= 3,
     select: (data) => {
+      // Filter out single track albums from each page
+      const filteredPages = data.pages.map(page => ({
+        ...page,
+        albums: {
+          ...page.albums,
+          items: page.albums.items.filter(album => album.total_tracks !== 1)
+        }
+      }));
+      
       return {
-        ...data.albums,
-        items: data.albums.items.filter(album => album.album_type === `album`),
-      }
+        pages: filteredPages,
+        pageParams: data.pageParams
+      };
     },
   });
 
