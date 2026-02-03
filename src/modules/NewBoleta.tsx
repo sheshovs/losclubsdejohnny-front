@@ -158,25 +158,23 @@ const NewBoleta = ({
 								fontSize: "12px",
 								color: "#28231d66",
 								letterSpacing: "1.2px",
-								textTransform: "uppercase",
 								lineHeight: 1,
 								fontFamily: "'Outfit', sans-serif",
 							}}
 						>
-							Album title
+							ALBUM TITLE
 						</Typography>
 						<Typography
 							fontWeight={900}
 							sx={{
 								fontSize: "20px",
-								textTransform: "uppercase",
 								lineHeight: 1,
 								color: "#28231D",
 								fontFamily: "'Outfit', sans-serif",
 								letterSpacing: "2px",
 							}}
 						>
-							{selectedAlbum.name}
+							{selectedAlbum.name.toLocaleUpperCase()}
 						</Typography>
 					</Grid>
 					<Grid
@@ -196,25 +194,26 @@ const NewBoleta = ({
 								fontSize: "12px",
 								color: "#28231d66",
 								letterSpacing: "1.2px",
-								textTransform: "uppercase",
 								lineHeight: 1,
 								fontFamily: "'Outfit', sans-serif",
 							}}
 						>
-							Artist(s)
+							ARTIST(S)
 						</Typography>
 						<Typography
 							fontWeight={900}
 							sx={{
 								fontSize: "20px",
-								textTransform: "uppercase",
 								lineHeight: 1,
 								color: "#28231D",
 								fontFamily: "'Outfit', sans-serif",
 								letterSpacing: "2px",
 							}}
 						>
-							{selectedAlbum.artists.map((artist) => artist.name).join(", ")}
+							{selectedAlbum.artists
+								.map((artist) => artist.name)
+								.join(", ")
+								.toLocaleUpperCase()}
 						</Typography>
 					</Grid>
 					<Grid
@@ -232,25 +231,25 @@ const NewBoleta = ({
 								fontSize: "12px",
 								color: "#28231d66",
 								letterSpacing: "1.2px",
-								textTransform: "uppercase",
 								lineHeight: 1,
 								fontFamily: "'Outfit', sans-serif",
 							}}
 						>
-							Year
+							YEAR
 						</Typography>
 						<Typography
 							fontWeight={900}
 							sx={{
 								fontSize: "20px",
-								textTransform: "uppercase",
 								lineHeight: 1,
 								color: "#28231D",
 								fontFamily: "'Outfit', sans-serif",
 								letterSpacing: "2px",
 							}}
 						>
-							{dayjs(selectedAlbum.release_date).format("YYYY")}
+							{dayjs(selectedAlbum.release_date)
+								.format("YYYY")
+								.toLocaleUpperCase()}
 						</Typography>
 					</Grid>
 				</Grid>
@@ -289,7 +288,6 @@ const NewBoleta = ({
 						<Typography
 							fontWeight={400}
 							sx={{
-								textTransform: "uppercase",
 								fontSize: {
 									xs: "16px",
 								},
@@ -317,7 +315,6 @@ const NewBoleta = ({
 						<Typography
 							fontWeight={400}
 							sx={{
-								textTransform: "uppercase",
 								fontSize: {
 									xs: "16px",
 								},
@@ -328,7 +325,7 @@ const NewBoleta = ({
 								fontFamily: "'Outfit', sans-serif",
 							}}
 						>
-							Song title
+							SONG TITLE
 						</Typography>
 					</Grid>
 					<Divider
@@ -445,7 +442,6 @@ const NewBoleta = ({
 							<Typography
 								fontWeight={400}
 								sx={{
-									textTransform: "uppercase",
 									fontSize: {
 										xs: "16px",
 									},
@@ -481,7 +477,6 @@ const NewBoleta = ({
 								<Typography
 									fontWeight={400}
 									sx={{
-										textTransform: "uppercase",
 										fontSize: {
 											xs: "16px",
 										},
@@ -498,7 +493,7 @@ const NewBoleta = ({
 										WebkitBoxOrient: "vertical",
 									}}
 								>
-									{track.name}
+									{track.name.toLocaleUpperCase()}
 								</Typography>
 							</Tooltip>
 						</Grid>
@@ -618,7 +613,6 @@ const NewBoleta = ({
 									<Typography
 										fontWeight={400}
 										sx={{
-											textTransform: "uppercase",
 											fontSize: {
 												xs: "16px",
 											},
@@ -647,7 +641,6 @@ const NewBoleta = ({
 									<Typography
 										fontWeight={400}
 										sx={{
-											textTransform: "uppercase",
 											fontSize: {
 												xs: "16px",
 											},
@@ -657,7 +650,7 @@ const NewBoleta = ({
 											fontFamily: "'Outfit', sans-serif",
 										}}
 									>
-										Song title
+										SONG TITLE
 									</Typography>
 								</Grid>
 								<Divider
@@ -771,7 +764,6 @@ const NewBoleta = ({
 						<Typography
 							fontWeight={400}
 							sx={{
-								textTransform: "uppercase",
 								fontSize: {
 									xs: "16px",
 								},
@@ -781,7 +773,7 @@ const NewBoleta = ({
 								fontFamily: "'Outfit', sans-serif",
 							}}
 						>
-							Average from hearts
+							AVERAGE FROM HEARTS
 						</Typography>
 					</Grid>
 
@@ -800,7 +792,6 @@ const NewBoleta = ({
 						<Typography
 							fontWeight={400}
 							sx={{
-								textTransform: "uppercase",
 								fontSize: {
 									xs: "16px",
 								},
@@ -810,7 +801,7 @@ const NewBoleta = ({
 								fontFamily: "'Outfit', sans-serif",
 							}}
 						>
-							Average from stars
+							AVERAGE FROM STARS
 						</Typography>
 					</Grid>
 
@@ -826,7 +817,6 @@ const NewBoleta = ({
 						<Typography
 							fontWeight={400}
 							sx={{
-								textTransform: "uppercase",
 								fontSize: {
 									xs: "16px",
 								},
@@ -836,7 +826,7 @@ const NewBoleta = ({
 								fontFamily: "'Outfit', sans-serif",
 							}}
 						>
-							Total score
+							TOTAL SCORE
 						</Typography>
 					</Grid>
 				</Grid>
@@ -867,7 +857,6 @@ const NewBoleta = ({
 						<Typography
 							fontWeight={800}
 							sx={{
-								textTransform: "uppercase",
 								fontSize: "16px",
 								lineHeight: 1,
 								letterSpacing: "1.2px",
@@ -894,7 +883,6 @@ const NewBoleta = ({
 						<Typography
 							fontWeight={800}
 							sx={{
-								textTransform: "uppercase",
 								fontSize: "16px",
 								lineHeight: 1,
 								letterSpacing: "1.2px",
@@ -919,7 +907,6 @@ const NewBoleta = ({
 						<Typography
 							fontWeight={800}
 							sx={{
-								textTransform: "uppercase",
 								fontSize: "24px",
 								lineHeight: 1,
 								letterSpacing: "1.2px",
@@ -958,7 +945,6 @@ const NewBoleta = ({
 						<Typography
 							fontWeight={400}
 							sx={{
-								textTransform: "uppercase",
 								fontSize: {
 									xs: "16px",
 								},
@@ -968,7 +954,7 @@ const NewBoleta = ({
 								fontFamily: "'Outfit', sans-serif",
 							}}
 						>
-							Your score
+							YOUR SCORE
 						</Typography>
 					</Grid>
 
@@ -1042,7 +1028,6 @@ const NewBoleta = ({
 								right: 10,
 								bottom: 10,
 								fontWeight: 800,
-								textTransform: "uppercase",
 								fontSize: "24px",
 								lineHeight: 1,
 								letterSpacing: "1.2px",

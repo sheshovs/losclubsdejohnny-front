@@ -165,27 +165,39 @@ const useBoleta = () => {
 
 		boletaRef.current.style.opacity = "1"
 
-		await html2canvas(boletaRef.current, {
-			scale: 2,
-			useCORS: true,
-			backgroundColor: null,
-		}).then((canvas) => { 
-			const dataUrl = canvas.toDataURL("image/jpeg", 0.95);
+		try {
+			// Esperar un momento para que se apliquen todos los estilos
+			await new Promise(resolve => setTimeout(resolve, 100));
+			
+			const element = boletaRef.current;
+			
+			const canvas = await html2canvas(element, {
+				scale: 2,
+				useCORS: true,
+				backgroundColor: null,
+			});
+			
+			const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
 			download(dataUrl, `boleta-${selectedAlbum?.name}.jpeg`);
-			boletaRef.current!.style.opacity = "0"
-		});
+			boletaRef.current!.style.opacity = "0";
 
-		ReactGA.event({
-			category: 'Boleta',
-			action: 'Descarga de boleta',
-		})
 
-		if(albumStamp) {
 			ReactGA.event({
 				category: 'Boleta',
-				action: `Sello obtenido: ${albumStamp}`,
+				action: 'Descarga de boleta',
 			})
+
+			if(albumStamp) {
+				ReactGA.event({
+					category: 'Boleta',
+					action: `Sello obtenido: ${albumStamp}`,
+				})
+			}
+		} catch (error) {
+			console.error('Error generating boleta image:', error);
+			boletaRef.current!.style.opacity = "0";
 		}
+
 		
 
 		// toJpeg(boletaRef.current, {
