@@ -288,7 +288,7 @@ const DashboardPage = () => {
 				container
 				size={12}
 				height="100dvh"
-				minHeight={800}
+				minHeight="100dvh"
 				bgcolor="#F7F4EF"
 				justifyContent="center"
 				alignItems="center"
@@ -305,7 +305,7 @@ const DashboardPage = () => {
 					container
 					size={12}
 					flex={1}
-					overflow="hidden"
+					overflow="auto"
 					justifyContent="center"
 				>
 					<Sidebar />
@@ -314,7 +314,6 @@ const DashboardPage = () => {
 					<Grid
 						container
 						size={12}
-						flex={1}
 						alignItems="center"
 						flexDirection="column"
 						paddingTop={6}
@@ -324,10 +323,6 @@ const DashboardPage = () => {
 						maxWidth={1000}
 						gap={3}
 						paddingBottom={4}
-						sx={{
-							overflowY: "auto",
-							flexWrap: "nowrap",
-						}}
 					>
 						<Grid
 							container

@@ -49,7 +49,7 @@ const Sidebar = () => {
 				position: "absolute",
 				left: 0,
 				zIndex: 29,
-				height: "100%",
+				height: "calc(100dvh - 60px)",
 				bgcolor: "#F7F4EF",
 				boxShadow: "2px 0px 5px rgba(0, 0, 0, 0.1)",
 				transition: "all 0.3s ease",
