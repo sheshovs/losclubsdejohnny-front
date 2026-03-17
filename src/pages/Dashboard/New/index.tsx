@@ -482,7 +482,7 @@ const NewBillboard = () => {
 												}}
 											>
 												<img
-													src={album.images[0].url}
+													src={album.images[0]?.url || ""}
 													alt={album.name}
 													style={{
 														width: "64px",

@@ -241,7 +241,7 @@ const Cartelera = ({ onSelectAlbum, isResponsive }: CarteleraProps) => {
 							}}
 						>
 							<img
-								src={album?.images[0].url}
+								src={album?.images[0]?.url || ""}
 								alt={album.name}
 								style={{
 									width: isResponsive ? "calc(150px * 1" : "calc(150px * 0.8)",
