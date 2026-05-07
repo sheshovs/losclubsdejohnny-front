@@ -254,7 +254,7 @@ const BoletaInformation = ({
 						lineHeight: 1,
 					}}
 				>
-					Escoje un sello
+					Escoge un sello
 				</Typography>
 
 				<Grid
