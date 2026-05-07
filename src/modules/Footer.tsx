@@ -20,9 +20,6 @@ const Footer = () => {
 			}}
 			position="relative"
 			zIndex={20}
-			sx={{
-				backgroundColor: "#EFE9DB",
-			}}
 		>
 			<Grid
 				container
