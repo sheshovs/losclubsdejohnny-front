@@ -24,7 +24,7 @@ const API = {
       params: {
         q: search,
         type: `album`,
-        limit: 20,
+        limit: 10,
         offset: offset,
       },
     })
