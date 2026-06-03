@@ -62,13 +62,16 @@ const useBoleta = () => {
 				(acc, rating) => acc + rating.favorite * 10,
 				0
 			) / tracksOfAlbum.length
+		const ratedTracksCount = Object.values(trackRatings).filter(
+			(rating) => rating.score > 0
+		).length
 		const starsAverage =
 			(Object.values(trackRatings).reduce(
 				(acc, rating) => acc + rating.score,
 				0
 			) *
 				2) /
-			tracksOfAlbum.length
+			(ratedTracksCount || 1)
 		const totalAverage = (heartsAverage + starsAverage) / 2
 
 		return {
