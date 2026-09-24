@@ -44,7 +44,7 @@ const HeaderDashboard = ({ onLogout }: HeaderDashboardProps) => {
 						textAlign: "center",
 					}}
 				>
-					Johnny’s Foolclub
+					Johnny’s Archives
 				</Typography>
 			</Grid>
 			<Grid

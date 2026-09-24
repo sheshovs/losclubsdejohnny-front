@@ -121,7 +121,7 @@ const LoginPage = () => {
 								lineHeight: 1,
 							}}
 						>
-							Johnny’s Foolclub
+							Johnny’s Archives
 						</Typography>
 					</Link>
 				</Grid>

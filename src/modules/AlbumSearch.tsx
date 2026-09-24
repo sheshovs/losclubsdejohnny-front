@@ -91,7 +91,7 @@ const AlbumSearch = ({ setSpotifyAlbumId, isResponsive }: AlbumSearchProps) => {
 						lineHeight: 1,
 					}}
 				>
-					Johnny’s Foolclub
+					Johnny’s Archives
 				</Typography>
 			</Grid>
 			{/* Instrucciones */}
