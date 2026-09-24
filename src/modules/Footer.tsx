@@ -1,11 +1,6 @@
 import { Grid, Link, Typography } from "@mui/material"
 import { Link as RouterLink } from "react-router"
-import {
-	LOGO_INSTAGRAM,
-	LOGO_TIKTOK,
-	LOGO_DISCORD,
-	LOGO_GLASSES,
-} from "../common/assets"
+import { LOGO_INSTAGRAM, LOGO_TIKTOK, LOGO_GLASSES } from "../common/assets"
 import dayjs from "dayjs"
 
 const Footer = () => {
@@ -109,33 +104,6 @@ const Footer = () => {
 						</Typography>
 					</Link>
 				</Grid>
-
-				<Link
-					href="https://www.instagram.com/losclubsdejohnny/"
-					target="_blank"
-					rel="noopener noreferrer"
-					underline="none"
-				>
-					<Typography
-						fontWeight={300}
-						sx={{
-							fontSize: "calc(16px * 0.8)",
-							fontFamily: "'Outfit', sans-serif",
-							color: "#28231D",
-							lineHeight: 1,
-							gap: 0.8,
-							display: "flex",
-							alignItems: "center",
-						}}
-					>
-						<img
-							src={LOGO_DISCORD}
-							width={21 * 0.8}
-							height={16 * 0.8}
-						/>
-						Únete a nuestro Discord
-					</Typography>
-				</Link>
 			</Grid>
 			<Grid
 				container

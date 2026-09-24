@@ -10,7 +10,6 @@ import LOGO_GLASSES from "./JFC-I.png"
 // Redes sociales
 import LOGO_INSTAGRAM from "./Instagram.png"
 import LOGO_TIKTOK from "./Tiktok.png"
-import LOGO_DISCORD from "./Discord.png"
 // Insignias
 import IN_ROJO from './insignias/Rojo.png'
 import IN_DORADO from './insignias/Dorado.png'
@@ -30,7 +29,6 @@ export {
   LOGO_GLASSES,
   LOGO_INSTAGRAM,
   LOGO_TIKTOK,
-  LOGO_DISCORD,
   IN_ROJO,
   IN_DORADO,
   IN_NEGRA,
